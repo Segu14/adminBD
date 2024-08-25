@@ -12,10 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AutosServiceImpl implements AutosService {
 
     @Autowired
-    private AutosService autosDao;
+    private AutosDao autosDao;
     
     @Transactional(readOnly = true)
-    @Override
     public List<Autos> getAutos() {
         var lista = autosDao.findAll();
         
@@ -37,5 +36,7 @@ public class AutosServiceImpl implements AutosService {
     public void delete(Autos autos) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+ 
     
 }
