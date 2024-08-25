@@ -29,12 +29,12 @@ public class AutosServiceImpl implements AutosService {
 
     @Override
     public void save(Autos autos) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        autosDao.save(autos);
     }
 
     @Override
     public void delete(Autos autos) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        autosDao.deleteById(autos.getIdAuto());
     }
 
  

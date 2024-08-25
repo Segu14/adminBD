@@ -2,10 +2,13 @@ package com.proyectoAdminBD.controller;
 
 import com.proyectoAdminBD.domain.Autos;
 import com.proyectoAdminBD.service.AutosService;
+import java.util.List;
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,7 +24,7 @@ public class AutosController {
         var lista = autosService.getAutos();
         model.addAttribute("autos", lista);
         model.addAttribute("totalAutos", lista.size());
-        model.addAttribute("autos", new Autos());
+        model.addAttribute("auto", new Autos());
         return "/autos/listado";
     }
     
@@ -34,8 +37,8 @@ public class AutosController {
     @GetMapping("/modificar/{idAutos}")
     public String modifica(Autos autos, Model model) {
         autos = autosService.getAuto(autos);
-        model.addAttribute("autos", autos);
-        return "autos/modifica";
+        model.addAttribute("reservacion", autos);
+        return "reservacion/modifica";
     }
 
     @GetMapping("/eliminar/{idAutos}")
