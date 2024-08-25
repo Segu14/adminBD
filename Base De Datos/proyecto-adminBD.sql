@@ -30,8 +30,7 @@ CREATE TABLE EMPLEADOS (
     EMAIL VARCHAR2(100),
     TELEFONO VARCHAR2(20),
     FECHA_CONTRATACION DATE,
-    ESTATUS VARCHAR2(50),
-    CONSTRAINT fk_empleado_puesto FOREIGN KEY (ID_PUESTO) REFERENCES PUESTOS(ID_PUESTO)
+    ESTATUS VARCHAR2(50)
 );
 
 -- Tabla: CLIENTES
@@ -61,20 +60,15 @@ CREATE TABLE SERVICIOS (
 );
 
 -- Tabla: MANTENIMIENTO
-
 CREATE TABLE MANTENIMIENTO (
     ID_MANTENIMIENTO INT PRIMARY KEY,
     ID_AUTO INT,
     ID_SERVICIO INT,
     FECHA DATE,
-    DIAGNOSTICO VARCHAR(200),
-    FOREIGN KEY (ID_AUTO) REFERENCES auto(ID_AUTO),
-    FOREIGN KEY (ID_SERVICIO) REFERENCES servicio(ID_SERVICIO)
+    DIAGNOSTICO VARCHAR(200)
 );
 
-
 -- Tabla: AUTOS
-
 CREATE TABLE AUTOS (
     ID_AUTO INT PRIMARY KEY,
     ID_PROVEEDOR INT,
@@ -89,9 +83,7 @@ CREATE TABLE AUTOS (
     CANTIDAD INT,
     ID_MANTENIMIENTO INT,
     TIPO_TRANSMISION VARCHAR2(20),
-    ESTADO VARCHAR2(50),
-    CONSTRAINT fk_auto_proveedor FOREIGN KEY (ID_PROVEEDOR) REFERENCES PROVEEDORES(ID_PROVEEDOR),
-    CONSTRAINT fk_auto_mantenimiento FOREIGN KEY (ID_MANTENIMIENTO) REFERENCES MANTENIMIENTO(ID_MANTENIMIENTO)
+    ESTADO VARCHAR2(50)
 );
 
 -- Tabla: FACTURAS
@@ -101,8 +93,7 @@ CREATE TABLE FACTURAS (
     TOTAL NUMBER,
     FECHA DATE,
     HORA TIMESTAMP,
-    ID_EMPLEADO INT,
-    CONSTRAINT fk_factura_empleado FOREIGN KEY (ID_EMPLEADO) REFERENCES EMPLEADOS(ID_EMPLEADO)
+    ID_EMPLEADO INT
 );
 
 -- Tabla: VENTAS
@@ -112,11 +103,7 @@ CREATE TABLE VENTAS (
     FECHA DATE,
     ID_CLIENTE INT,
     ID_AUTO INT,
-    ID_EMPLEADO INT,
-    CONSTRAINT fk_venta_factura FOREIGN KEY (ID_FACTURA) REFERENCES FACTURAS(ID_FACTURA),
-    CONSTRAINT fk_venta_cliente FOREIGN KEY (ID_CLIENTE) REFERENCES CLIENTES(ID_CLIENTE),
-    CONSTRAINT fk_venta_auto FOREIGN KEY (ID_AUTO) REFERENCES AUTOS(ID_AUTO),
-    CONSTRAINT fk_venta_empleado FOREIGN KEY (ID_EMPLEADO) REFERENCES EMPLEADOS(ID_EMPLEADO)
+    ID_EMPLEADO INT
 );
 
 -- Tabla: REPUESTO
@@ -124,8 +111,7 @@ CREATE TABLE REPUESTO (
     ID_ITEM INT PRIMARY KEY,
     ID_AUTO INT,
     DESCRIPCION_REPUESTO VARCHAR2(100), 
-    CANTIDAD INT,
-    CONSTRAINT fk_repuesto_auto FOREIGN KEY (ID_AUTO) REFERENCES AUTOS(ID_AUTO)
+    CANTIDAD INT
 );
 
 -- Tabla: COTIZACIONES
@@ -135,9 +121,7 @@ CREATE TABLE COTIZACIONES (
     ID_AUTO INT,
     PRECIO_PROPUESTO NUMBER,
     FECHA DATE,
-    ESTADO VARCHAR2(50),
-    CONSTRAINT fk_cotizacion_cliente FOREIGN KEY (ID_CLIENTE) REFERENCES CLIENTES(ID_CLIENTE),
-    CONSTRAINT fk_cotizacion_auto FOREIGN KEY (ID_AUTO) REFERENCES AUTOS(ID_AUTO)
+    ESTADO VARCHAR2(50)
 );
 
 -- Tabla: FINANCIAMIENTO
@@ -150,217 +134,679 @@ CREATE TABLE FINANCIAMIENTO (
     DURACION_MESES INT,
     FECHA_INICIO DATE,
     FECHA_FINAL DATE,
-    ENTIDAD_BANCARIA VARCHAR2(50),
-    CONSTRAINT fk_financiamiento_cliente FOREIGN KEY (ID_CLIENTE) REFERENCES CLIENTES(ID_CLIENTE),
-    CONSTRAINT fk_financiamiento_auto FOREIGN KEY (ID_AUTO) REFERENCES AUTOS(ID_AUTO)
+    ENTIDAD_BANCARIA VARCHAR2(50)
 );
+
+
+
+
+--------------------
+--FK--
+--------------------
+-- Agregar Foreign Keys a EMPLEADOS
+ALTER TABLE EMPLEADOS
+ADD CONSTRAINT fk_empleado_puesto FOREIGN KEY (ID_PUESTO) REFERENCES PUESTOS(ID_PUESTO);
+
+-- Agregar Foreign Keys a MANTENIMIENTO
+ALTER TABLE MANTENIMIENTO
+ADD CONSTRAINT fk_mantenimiento_auto FOREIGN KEY (ID_AUTO) REFERENCES AUTOS(ID_AUTO);
+
+ALTER TABLE MANTENIMIENTO
+ADD CONSTRAINT fk_mantenimiento_servicio FOREIGN KEY (ID_SERVICIO) REFERENCES SERVICIOS(ID_SERVICIO);
+
+-- Agregar Foreign Keys a AUTOS
+ALTER TABLE AUTOS
+ADD CONSTRAINT fk_auto_proveedor FOREIGN KEY (ID_PROVEEDOR) REFERENCES PROVEEDORES(ID_PROVEEDOR);
+
+ALTER TABLE AUTOS
+ADD CONSTRAINT fk_auto_mantenimiento FOREIGN KEY (ID_MANTENIMIENTO) REFERENCES MANTENIMIENTO(ID_MANTENIMIENTO);
+
+-- Agregar Foreign Keys a FACTURAS
+ALTER TABLE FACTURAS
+ADD CONSTRAINT fk_factura_empleado FOREIGN KEY (ID_EMPLEADO) REFERENCES EMPLEADOS(ID_EMPLEADO);
+
+-- Agregar Foreign Keys a VENTAS
+ALTER TABLE VENTAS
+ADD CONSTRAINT fk_venta_factura FOREIGN KEY (ID_FACTURA) REFERENCES FACTURAS(ID_FACTURA);
+
+ALTER TABLE VENTAS
+ADD CONSTRAINT fk_venta_cliente FOREIGN KEY (ID_CLIENTE) REFERENCES CLIENTES(ID_CLIENTE);
+
+ALTER TABLE VENTAS
+ADD CONSTRAINT fk_venta_auto FOREIGN KEY (ID_AUTO) REFERENCES AUTOS(ID_AUTO);
+
+ALTER TABLE VENTAS
+ADD CONSTRAINT fk_venta_empleado FOREIGN KEY (ID_EMPLEADO) REFERENCES EMPLEADOS(ID_EMPLEADO);
+
+-- Agregar Foreign Keys a REPUESTO
+ALTER TABLE REPUESTO
+ADD CONSTRAINT fk_repuesto_auto FOREIGN KEY (ID_AUTO) REFERENCES AUTOS(ID_AUTO);
+
+-- Agregar Foreign Keys a COTIZACIONES
+ALTER TABLE COTIZACIONES
+ADD CONSTRAINT fk_cotizacion_cliente FOREIGN KEY (ID_CLIENTE) REFERENCES CLIENTES(ID_CLIENTE);
+
+ALTER TABLE COTIZACIONES
+ADD CONSTRAINT fk_cotizacion_auto FOREIGN KEY (ID_AUTO) REFERENCES AUTOS(ID_AUTO);
+
+-- Agregar Foreign Keys a FINANCIAMIENTO
+ALTER TABLE FINANCIAMIENTO
+ADD CONSTRAINT fk_financiamiento_cliente FOREIGN KEY (ID_CLIENTE) REFERENCES CLIENTES(ID_CLIENTE);
+
+ALTER TABLE FINANCIAMIENTO
+ADD CONSTRAINT fk_financiamiento_auto FOREIGN KEY (ID_AUTO) REFERENCES AUTOS(ID_AUTO);
+
+
+
 
 --------------------
 --Inserts--
 --------------------
--- Insertar datos en la tabla: PUESTOS
-INSERT INTO PUESTOS VALUES (1, 'Gerente', 2000);
-INSERT INTO PUESTOS VALUES (2, 'Vendedor', 1500);
-INSERT INTO PUESTOS VALUES (3, 'Mecanico', 1200);
-INSERT INTO PUESTOS VALUES (4, 'Administrador', 1800);
-INSERT INTO PUESTOS VALUES (5, 'Contador', 1600);
-INSERT INTO PUESTOS VALUES (6, 'Recepcionista', 1100);
-INSERT INTO PUESTOS VALUES (7, 'Limpieza', 800);
-INSERT INTO PUESTOS VALUES (8, 'Seguridad', 1000);
-INSERT INTO PUESTOS VALUES (9, 'Jefe de Taller', 1900);
-INSERT INTO PUESTOS VALUES (10, 'Asistente', 1300);
-INSERT INTO PUESTOS VALUES (11, 'Gerente de Ventas', 2100);
-INSERT INTO PUESTOS VALUES (12, 'Asesor Financiero', 1700);
-INSERT INTO PUESTOS VALUES (13, 'Encargado de Inventario', 1400);
-INSERT INTO PUESTOS VALUES (14, 'Supervisor de Mantenimiento', 1800);
-INSERT INTO PUESTOS VALUES (15, 'Analista de Marketing', 1600);
-INSERT INTO PUESTOS VALUES (16, 'Especialista en IT', 1900);
-INSERT INTO PUESTOS VALUES (17, 'Auxiliar Contable', 1200);
-INSERT INTO PUESTOS VALUES (18, 'Coordinador de Recursos Humanos', 2000);
-INSERT INTO PUESTOS VALUES (19, 'Gerente de Servicio al Cliente', 2100);
-INSERT INTO PUESTOS VALUES (20, 'Jefe de Logística', 1800);
-INSERT INTO PUESTOS VALUES (21, 'Operador de Grúa', 1300);
-INSERT INTO PUESTOS VALUES (22, 'Técnico de Diagnóstico', 1400);
-INSERT INTO PUESTOS VALUES (23, 'Supervisor de Ventas', 1850);
-INSERT INTO PUESTOS VALUES (24, 'Especialista en Atención al Cliente', 1500);
-INSERT INTO PUESTOS VALUES (25, 'Coordinador de Operaciones', 2100);
-INSERT INTO PUESTOS VALUES (26, 'Encargado de Compras', 1600);
-INSERT INTO PUESTOS VALUES (27, 'Ingeniero de Calidad', 2000);
-INSERT INTO PUESTOS VALUES (28, 'Planificador de Producción', 1800);
-INSERT INTO PUESTOS VALUES (29, 'Supervisor de Seguridad', 1300);
-INSERT INTO PUESTOS VALUES (30, 'Jefe de Control de Calidad', 2200);
-INSERT INTO PUESTOS VALUES (31, 'Coordinador de Proyectos', 1900);
-INSERT INTO PUESTOS VALUES (32, 'Consultor de Procesos', 2300);
-INSERT INTO PUESTOS VALUES (33, 'Gerente de Sucursal', 2400);
-INSERT INTO PUESTOS VALUES (34, 'Especialista en Logística', 1700);
-INSERT INTO PUESTOS VALUES (35, 'Coordinador de Entrenamiento', 1600);
-INSERT INTO PUESTOS VALUES (36, 'Jefe de Almacén', 1500);
-INSERT INTO PUESTOS VALUES (37, 'Encargado de Garantías', 1400);
-INSERT INTO PUESTOS VALUES (38, 'Supervisor de Taller', 1800);
-INSERT INTO PUESTOS VALUES (39, 'Especialista en Reclutamiento', 1750);
-INSERT INTO PUESTOS VALUES (40, 'Analista de Datos', 1900);
-INSERT INTO PUESTOS VALUES (41, 'Gerente de Publicidad', 2200);
-INSERT INTO PUESTOS VALUES (42, 'Encargado de Logística', 1600);
-INSERT INTO PUESTOS VALUES (43, 'Supervisor de Call Center', 1500);
-INSERT INTO PUESTOS VALUES (44, 'Especialista en Auditoría', 1900);
-INSERT INTO PUESTOS VALUES (45, 'Jefe de Comunicación', 2100);
-INSERT INTO PUESTOS VALUES (46, 'Coordinador de Ventas', 1800);
-INSERT INTO PUESTOS VALUES (47, 'Gerente de Proyectos', 2500);
-INSERT INTO PUESTOS VALUES (48, 'Asistente de Gerencia', 1500);
-INSERT INTO PUESTOS VALUES (49, 'Coordinador de Mantenimiento', 1700);
-INSERT INTO PUESTOS VALUES (50, 'Técnico en Electrónica', 1300);
-INSERT INTO PUESTOS VALUES (51, 'Especialista en Publicidad', 1800);
-INSERT INTO PUESTOS VALUES (52, 'Gerente de Operaciones', 2300);
-INSERT INTO PUESTOS VALUES (53, 'Jefe de Compras', 2200);
-INSERT INTO PUESTOS VALUES (54, 'Supervisor de Recursos Humanos', 1900);
-INSERT INTO PUESTOS VALUES (55, 'Encargado de Seguridad', 1600);
-INSERT INTO PUESTOS VALUES (56, 'Técnico en Mecatrónica', 1400);
-INSERT INTO PUESTOS VALUES (57, 'Coordinador de Auditoría', 2000);
-INSERT INTO PUESTOS VALUES (58, 'Jefe de IT', 2400);
-INSERT INTO PUESTOS VALUES (59, 'Consultor de Negocios', 2300);
-INSERT INTO PUESTOS VALUES (60, 'Especialista en Desarrollo Organizacional', 1800);
-INSERT INTO PUESTOS VALUES (61, 'Analista Financiero', 2000);
-INSERT INTO PUESTOS VALUES (62, 'Gerente de Innovación', 2500);
-INSERT INTO PUESTOS VALUES (63, 'Supervisor de Planta', 1900);
-INSERT INTO PUESTOS VALUES (64, 'Encargado de Relaciones Públicas', 1700);
-INSERT INTO PUESTOS VALUES (65, 'Jefe de Ventas', 2300);
-INSERT INTO PUESTOS VALUES (66, 'Coordinador de Calidad', 1800);
-INSERT INTO PUESTOS VALUES (67, 'Consultor de Marketing', 2200);
-INSERT INTO PUESTOS VALUES (68, 'Técnico en Refrigeración', 1400);
-INSERT INTO PUESTOS VALUES (69, 'Supervisor de Mantenimiento', 1900);
-INSERT INTO PUESTOS VALUES (70, 'Especialista en Tecnología', 2100);
-INSERT INTO PUESTOS VALUES (71, 'Gerente de Administración', 2400);
-INSERT INTO PUESTOS VALUES (72, 'Coordinador de Finanzas', 2000);
-INSERT INTO PUESTOS VALUES (73, 'Jefe de Entrenamiento', 2100);
-INSERT INTO PUESTOS VALUES (74, 'Especialista en Desarrollo de Software', 2300);
-INSERT INTO PUESTOS VALUES (75, 'Encargado de Control Interno', 1600);
-INSERT INTO PUESTOS VALUES (76, 'Supervisor de Distribución', 1700);
-INSERT INTO PUESTOS VALUES (77, 'Analista de Riesgos', 1900);
-INSERT INTO PUESTOS VALUES (78, 'Jefe de Recursos Humanos', 2200);
-INSERT INTO PUESTOS VALUES (79, 'Coordinador de Proveeduría', 1600);
-INSERT INTO PUESTOS VALUES (80, 'Especialista en Gestión de Talento', 1800);
-INSERT INTO PUESTOS VALUES (81, 'Gerente de Procesos', 2500);
-INSERT INTO PUESTOS VALUES (82, 'Técnico en Mantenimiento Industrial', 1400);
-INSERT INTO PUESTOS VALUES (83, 'Supervisor de Logística', 1800);
-INSERT INTO PUESTOS VALUES (84, 'Encargado de Transporte', 1600);
-INSERT INTO PUESTOS VALUES (85, 'Jefe de Proyectos', 2400);
-INSERT INTO PUESTOS VALUES (86, 'Coordinador de Recursos Financieros', 2100);
-INSERT INTO PUESTOS VALUES (87, 'Especialista en Compras', 1800);
-INSERT INTO PUESTOS VALUES (88, 'Analista de Costos', 1900);
-INSERT INTO PUESTOS VALUES (89, 'Gerente de TI', 2500);
-INSERT INTO PUESTOS VALUES (90, 'Técnico en Telecomunicaciones', 1500);
-INSERT INTO PUESTOS VALUES (91, 'Coordinador de Inventarios', 1700);
-INSERT INTO PUESTOS VALUES (92, 'Jefe de Producción', 2200);
-INSERT INTO PUESTOS VALUES (93, 'Supervisor de Calidad', 1800);
-INSERT INTO PUESTOS VALUES (94, 'Consultor en Seguridad', 2300);
-INSERT INTO PUESTOS VALUES (95, 'Especialista en Planificación', 1900);
-INSERT INTO PUESTOS VALUES (96, 'Gerente de Seguridad Industrial', 2500);
-INSERT INTO PUESTOS VALUES (97, 'Coordinador de Logística', 1800);
-INSERT INTO PUESTOS VALUES (98, 'Técnico en Automatización', 1500);
-INSERT INTO PUESTOS VALUES (99, 'Jefe de Auditoría', 2200);
-INSERT INTO PUESTOS VALUES (100, 'Especialista en Operaciones', 1900);
-INSERT INTO PUESTOS VALUES (101, 'Gerente de Estrategia', 2600);
-INSERT INTO PUESTOS VALUES (102, 'Supervisor de Seguridad Informática', 2000);
-INSERT INTO PUESTOS VALUES (103, 'Técnico en Instalaciones Eléctricas', 1400);
-INSERT INTO PUESTOS VALUES (104, 'Coordinador de Seguridad', 1800);
-INSERT INTO PUESTOS VALUES (105, 'Jefe de Proveeduría', 2100);
-INSERT INTO PUESTOS VALUES (106, 'Especialista en Innovación', 2200);
-INSERT INTO PUESTOS VALUES (107, 'Gerente de Innovación y Desarrollo', 2600);
-INSERT INTO PUESTOS VALUES (108, 'Supervisor de Inventarios', 1900);
-INSERT INTO PUESTOS VALUES (109, 'Técnico en Instrumentación', 1500);
-INSERT INTO PUESTOS VALUES (110, 'Coordinador de Seguridad Industrial', 2000);
-INSERT INTO PUESTOS VALUES (111, 'Jefe de Control de Inventarios', 2200);
-INSERT INTO PUESTOS VALUES (112, 'Especialista en Procesos', 1900);
-INSERT INTO PUESTOS VALUES (113, 'Gerente de Calidad', 2500);
-INSERT INTO PUESTOS VALUES (114, 'Supervisor de Proyectos', 2100);
-INSERT INTO PUESTOS VALUES (115, 'Técnico en Redes y Telecomunicaciones', 1500);
-INSERT INTO PUESTOS VALUES (116, 'Coordinador de Logística y Distribución', 1900);
-INSERT INTO PUESTOS VALUES (117, 'Jefe de Seguridad Informática', 2400);
-INSERT INTO PUESTOS VALUES (118, 'Especialista en Control de Calidad', 1800);
-INSERT INTO PUESTOS VALUES (119, 'Gerente de Producción', 2600);
-INSERT INTO PUESTOS VALUES (120, 'Supervisor de Procesos', 1900);
-INSERT INTO PUESTOS VALUES (121, 'Técnico en Maquinarias', 1500);
-INSERT INTO PUESTOS VALUES (122, 'Coordinador de Entrenamiento y Desarrollo', 2100);
-INSERT INTO PUESTOS VALUES (123, 'Jefe de Riesgos', 2300);
-INSERT INTO PUESTOS VALUES (124, 'Especialista en Gestión Financiera', 2000);
-INSERT INTO PUESTOS VALUES (125, 'Gerente de Proyectos Especiales', 2700);
-INSERT INTO PUESTOS VALUES (126, 'Supervisor de Mantenimiento y Servicios', 2000);
-INSERT INTO PUESTOS VALUES (127, 'Técnico en Equipos Pesados', 1600);
-INSERT INTO PUESTOS VALUES (128, 'Coordinador de Compras', 1900);
-INSERT INTO PUESTOS VALUES (129, 'Jefe de Seguridad y Salud Ocupacional', 2200);
-INSERT INTO PUESTOS VALUES (130, 'Especialista en Servicios Generales', 1800);
-INSERT INTO PUESTOS VALUES (131, 'Gerente de Servicios Técnicos', 2600);
-INSERT INTO PUESTOS VALUES (132, 'Supervisor de Producción', 2000);
-INSERT INTO PUESTOS VALUES (133, 'Técnico en Aire Acondicionado', 1500);
-INSERT INTO PUESTOS VALUES (134, 'Coordinador de Recursos Materiales', 1900);
-INSERT INTO PUESTOS VALUES (135, 'Jefe de Comunicación Corporativa', 2200);
-INSERT INTO PUESTOS VALUES (136, 'Especialista en Proyectos', 1900);
-INSERT INTO PUESTOS VALUES (137, 'Gerente de Operaciones y Logística', 2700);
-INSERT INTO PUESTOS VALUES (138, 'Supervisor de Soporte Técnico', 2000);
-INSERT INTO PUESTOS VALUES (139, 'Técnico en Mantenimiento de Flotas', 1600);
-INSERT INTO PUESTOS VALUES (140, 'Coordinador de Desarrollo Humano', 2100);
-INSERT INTO PUESTOS VALUES (141, 'Jefe de Logística y Transporte', 2300);
-INSERT INTO PUESTOS VALUES (142, 'Especialista en Relaciones Laborales', 1800);
-INSERT INTO PUESTOS VALUES (143, 'Gerente de Recursos Humanos', 2700);
-INSERT INTO PUESTOS VALUES (144, 'Supervisor de Mantenimiento Preventivo', 2000);
-INSERT INTO PUESTOS VALUES (145, 'Técnico en Sistemas de Control', 1500);
-INSERT INTO PUESTOS VALUES (146, 'Coordinador de Servicios Técnicos', 2100);
-INSERT INTO PUESTOS VALUES (147, 'Jefe de Planificación', 2300);
-INSERT INTO PUESTOS VALUES (148, 'Especialista en Evaluación de Proyectos', 2000);
-INSERT INTO PUESTOS VALUES (149, 'Gerente de Desarrollo Organizacional', 2700);
-INSERT INTO PUESTOS VALUES (150, 'Supervisor de Seguridad y Salud', 1900);
-INSERT INTO PUESTOS VALUES (151, 'Técnico en Instalaciones Industriales', 1400);
-INSERT INTO PUESTOS VALUES (152, 'Coordinador de Proyectos y Servicios', 2100);
-INSERT INTO PUESTOS VALUES (153, 'Jefe de Ingeniería', 2400);
-INSERT INTO PUESTOS VALUES (154, 'Especialista en Capacitación', 1900);
-INSERT INTO PUESTOS VALUES (155, 'Gerente de Infraestructura', 2600);
-INSERT INTO PUESTOS VALUES (156, 'Supervisor de Infraestructura', 2000);
-INSERT INTO PUESTOS VALUES (157, 'Técnico en Energía y Potencia', 1600);
-INSERT INTO PUESTOS VALUES (158, 'Coordinador de Medio Ambiente', 1900);
-INSERT INTO PUESTOS VALUES (159, 'Jefe de Tecnología', 2500);
-INSERT INTO PUESTOS VALUES (160, 'Especialista en Sistemas de Información', 2200);
-INSERT INTO PUESTOS VALUES (161, 'Gerente de Tecnología', 2800);
-INSERT INTO PUESTOS VALUES (162, 'Supervisor de Tecnología', 2200);
-INSERT INTO PUESTOS VALUES (163, 'Técnico en Gestión de Calidad', 1800);
-INSERT INTO PUESTOS VALUES (164, 'Coordinador de Desarrollo de Software', 2200);
-INSERT INTO PUESTOS VALUES (165, 'Jefe de Innovación Tecnológica', 2600);
-INSERT INTO PUESTOS VALUES (166, 'Especialista en Seguridad y Salud Ocupacional', 2000);
-INSERT INTO PUESTOS VALUES (167, 'Gerente de Mantenimiento', 2700);
-INSERT INTO PUESTOS VALUES (168, 'Supervisor de Proyectos Tecnológicos', 2200);
-INSERT INTO PUESTOS VALUES (169, 'Técnico en Seguridad Electrónica', 1600);
-INSERT INTO PUESTOS VALUES (170, 'Coordinador de Evaluación de Proyectos', 2200);
-INSERT INTO PUESTOS VALUES (171, 'Jefe de Medio Ambiente', 2500);
-INSERT INTO PUESTOS VALUES (172, 'Especialista en Gestión Ambiental', 1900);
-INSERT INTO PUESTOS VALUES (173, 'Gerente de Seguridad Corporativa', 2800);
-INSERT INTO PUESTOS VALUES (174, 'Supervisor de Control de Calidad', 2100);
-INSERT INTO PUESTOS VALUES (175, 'Técnico en Monitoreo y Control', 1700);
-INSERT INTO PUESTOS VALUES (176, 'Coordinador de Seguridad Operacional', 2300);
-INSERT INTO PUESTOS VALUES (177, 'Jefe de Operaciones Logísticas', 2600);
-INSERT INTO PUESTOS VALUES (178, 'Especialista en Recursos Naturales', 2000);
-INSERT INTO PUESTOS VALUES (179, 'Gerente de Producción Industrial', 2800);
-INSERT INTO PUESTOS VALUES (180, 'Supervisor de Mantenimiento Predictivo', 2100);
-INSERT INTO PUESTOS VALUES (181, 'Técnico en Control de Producción', 1800);
-INSERT INTO PUESTOS VALUES (182, 'Coordinador de Programas de Seguridad', 2300);
-INSERT INTO PUESTOS VALUES (183, 'Jefe de Seguridad Operacional', 2600);
-INSERT INTO PUESTOS VALUES (184, 'Especialista en Procesos Industriales', 2200);
-INSERT INTO PUESTOS VALUES (185, 'Gerente de Ingeniería de Proyectos', 2900);
-INSERT INTO PUESTOS VALUES (186, 'Supervisor de Producción y Operaciones', 2200);
-INSERT INTO PUESTOS VALUES (187, 'Técnico en Sistemas de Automatización', 1700);
-INSERT INTO PUESTOS VALUES (188, 'Coordinador de Mejora Continua', 2300);
-INSERT INTO PUESTOS VALUES (189, 'Jefe de Logística Internacional', 2700);
-INSERT INTO PUESTOS VALUES (190, 'Especialista en Normativas', 2000);
-INSERT INTO PUESTOS VALUES (191, 'Gerente de Proyectos Industriales', 2900);
-INSERT INTO PUESTOS VALUES (192, 'Supervisor de Procesos Productivos', 2200);
-INSERT INTO PUESTOS VALUES (193, 'Técnico en Mantenimiento Correctivo', 1800);
-INSERT INTO PUESTOS VALUES (194, 'Coordinador de Seguridad Electrónica', 2200);
-INSERT INTO PUESTOS VALUES (195, 'Jefe de Gestión de Riesgos', 2600);
-INSERT INTO PUESTOS VALUES (196, 'Especialista en Gestión de Riesgos', 2200);
-INSERT INTO PUESTOS VALUES (197, 'Gerente de Seguridad y Salud Ocupacional', 2900);
-INSERT INTO PUESTOS VALUES (198, 'Supervisor de Seguridad Operativa', 2300);
-INSERT INTO PUESTOS VALUES (199, 'Técnico en Equipos Electrónicos', 1700);
-INSERT INTO PUESTOS VALUES (200, 'Coordinador de Seguridad y Salud', 2200);
+-- Insertar datos en la tabla: PROVEEDORES
+INSERT INTO PROVEEDORES VALUES (1, 'Toyota', 'Avenida 123, Ciudad', '123456711', 'contact@toyota.com');
+INSERT INTO PROVEEDORES VALUES (2, 'Ford', 'Calle 456, Ciudad', '123456712', 'contact@ford.com');
+INSERT INTO PROVEEDORES VALUES (3, 'Chevrolet', 'Boulevard 789, Ciudad', '123456713', 'contact@chevrolet.com');
+INSERT INTO PROVEEDORES VALUES (4, 'Honda', 'Avenida Principal, Ciudad', '123456714', 'contact@honda.com');
+INSERT INTO PROVEEDORES VALUES (5, 'Nissan', 'Calle Secundaria, Ciudad', '123456715', 'contact@nissan.com');
+INSERT INTO PROVEEDORES VALUES (6, 'BMW', 'Calle Tercera, Ciudad', '123456716', 'contact@bmw.com');
+INSERT INTO PROVEEDORES VALUES (7, 'Audi', 'Avenida Cuarta, Ciudad', '123456717', 'contact@audi.com');
+INSERT INTO PROVEEDORES VALUES (8, 'Mercedes-Benz', 'Boulevard Quinto, Ciudad', '123456718', 'contact@mercedes-benz.com');
+INSERT INTO PROVEEDORES VALUES (9, 'Hyundai', 'Avenida Sexta, Ciudad', '123456719', 'contact@hyundai.com');
+INSERT INTO PROVEEDORES VALUES (10, 'Volkswagen', 'Calle Séptima, Ciudad', '123456720', 'contact@volkswagen.com');
+INSERT INTO PROVEEDORES VALUES (11, 'Kia', 'Calle 11, Ciudad', '123456721', 'contact@kia.com');
+INSERT INTO PROVEEDORES VALUES (12, 'Mazda', 'Avenida 12, Ciudad', '123456722', 'contact@mazda.com');
+INSERT INTO PROVEEDORES VALUES (13, 'Subaru', 'Boulevard 13, Ciudad', '123456723', 'contact@subaru.com');
+INSERT INTO PROVEEDORES VALUES (14, 'Mitsubishi', 'Calle 14, Ciudad', '123456724', 'contact@mitsubishi.com');
+INSERT INTO PROVEEDORES VALUES (15, 'Suzuki', 'Avenida 15, Ciudad', '123456725', 'contact@suzuki.com');
+INSERT INTO PROVEEDORES VALUES (16, 'Renault', 'Boulevard 16, Ciudad', '123456726', 'contact@renault.com');
+INSERT INTO PROVEEDORES VALUES (17, 'Peugeot', 'Calle 17, Ciudad', '123456727', 'contact@peugeot.com');
+INSERT INTO PROVEEDORES VALUES (18, 'Fiat', 'Avenida 18, Ciudad', '123456728', 'contact@fiat.com');
+INSERT INTO PROVEEDORES VALUES (19, 'Volvo', 'Boulevard 19, Ciudad', '123456729', 'contact@volvo.com');
+INSERT INTO PROVEEDORES VALUES (20, 'Jeep', 'Calle 20, Ciudad', '123456730', 'contact@jeep.com');
+INSERT INTO PROVEEDORES VALUES (21, 'Land Rover', 'Avenida 21, Ciudad', '123456731', 'contact@landrover.com');
+INSERT INTO PROVEEDORES VALUES (22, 'Jaguar', 'Boulevard 22, Ciudad', '123456732', 'contact@jaguar.com');
+INSERT INTO PROVEEDORES VALUES (23, 'Porsche', 'Calle 23, Ciudad', '123456733', 'contact@porsche.com');
+INSERT INTO PROVEEDORES VALUES (24, 'Lexus', 'Avenida 24, Ciudad', '123456734', 'contact@lexus.com');
+INSERT INTO PROVEEDORES VALUES (25, 'Ferrari', 'Boulevard 25, Ciudad', '123456735', 'contact@ferrari.com');
+INSERT INTO PROVEEDORES VALUES (26, 'Lamborghini', 'Calle 26, Ciudad', '123456736', 'contact@lamborghini.com');
+INSERT INTO PROVEEDORES VALUES (27, 'Maserati', 'Avenida 27, Ciudad', '123456737', 'contact@maserati.com');
+INSERT INTO PROVEEDORES VALUES (28, 'Bentley', 'Boulevard 28, Ciudad', '123456738', 'contact@bentley.com');
+INSERT INTO PROVEEDORES VALUES (29, 'Rolls-Royce', 'Calle 29, Ciudad', '123456739', 'contact@rolls-royce.com');
+INSERT INTO PROVEEDORES VALUES (30, 'Aston Martin', 'Avenida 30, Ciudad', '123456740', 'contact@astonmartin.com');
+INSERT INTO PROVEEDORES VALUES (31, 'Alfa Romeo', 'Boulevard 31, Ciudad', '123456741', 'contact@alfaromeo.com');
+INSERT INTO PROVEEDORES VALUES (32, 'Genesis', 'Calle 32, Ciudad', '123456742', 'contact@genesis.com');
+INSERT INTO PROVEEDORES VALUES (33, 'Acura', 'Avenida 33, Ciudad', '123456743', 'contact@acura.com');
+INSERT INTO PROVEEDORES VALUES (34, 'Infiniti', 'Boulevard 34, Ciudad', '123456744', 'contact@infiniti.com');
+INSERT INTO PROVEEDORES VALUES (35, 'Tesla', 'Calle 35, Ciudad', '123456745', 'contact@tesla.com');
+INSERT INTO PROVEEDORES VALUES (36, 'Mini', 'Avenida 36, Ciudad', '123456746', 'contact@mini.com');
+INSERT INTO PROVEEDORES VALUES (37, 'Skoda', 'Boulevard 37, Ciudad', '123456747', 'contact@skoda.com');
+INSERT INTO PROVEEDORES VALUES (38, 'Seat', 'Calle 38, Ciudad', '123456748', 'contact@seat.com');
+INSERT INTO PROVEEDORES VALUES (39, 'Dodge', 'Avenida 39, Ciudad', '123456749', 'contact@dodge.com');
+INSERT INTO PROVEEDORES VALUES (40, 'Chrysler', 'Boulevard 40, Ciudad', '123456750', 'contact@chrysler.com');
+INSERT INTO PROVEEDORES VALUES (41, 'RAM', 'Calle 41, Ciudad', '123456751', 'contact@ram.com');
+INSERT INTO PROVEEDORES VALUES (42, 'GMC', 'Avenida 42, Ciudad', '123456752', 'contact@gmc.com');
+INSERT INTO PROVEEDORES VALUES (43, 'Buick', 'Boulevard 43, Ciudad', '123456753', 'contact@buick.com');
+INSERT INTO PROVEEDORES VALUES (44, 'Cadillac', 'Calle 44, Ciudad', '123456754', 'contact@cadillac.com');
+INSERT INTO PROVEEDORES VALUES (45, 'Lincoln', 'Avenida 45, Ciudad', '123456755', 'contact@lincoln.com');
+INSERT INTO PROVEEDORES VALUES (46, 'Hummer', 'Boulevard 46, Ciudad', '123456756', 'contact@hummer.com');
+INSERT INTO PROVEEDORES VALUES (47, 'Pontiac', 'Calle 47, Ciudad', '123456757', 'contact@pontiac.com');
+INSERT INTO PROVEEDORES VALUES (48, 'Saturn', 'Avenida 48, Ciudad', '123456758', 'contact@saturn.com');
+INSERT INTO PROVEEDORES VALUES (49, 'Saab', 'Boulevard 49, Ciudad', '123456759', 'contact@saab.com');
+INSERT INTO PROVEEDORES VALUES (50, 'Mitsubishi', 'Calle 50, Ciudad', '123456760', 'contact@mitsubishi.com');
+INSERT INTO PROVEEDORES VALUES (51, 'Suzuki', 'Avenida 51, Ciudad', '123456761', 'contact@suzuki.com');
+INSERT INTO PROVEEDORES VALUES (52, 'Isuzu', 'Boulevard 52, Ciudad', '123456762', 'contact@isuzu.com');
+INSERT INTO PROVEEDORES VALUES (53, 'Scion', 'Calle 53, Ciudad', '123456763', 'contact@scion.com');
+INSERT INTO PROVEEDORES VALUES (54, 'Daihatsu', 'Avenida 54, Ciudad', '123456764', 'contact@daihatsu.com');
+INSERT INTO PROVEEDORES VALUES (55, 'Fiat', 'Boulevard 55, Ciudad', '123456765', 'contact@fiat.com');
+INSERT INTO PROVEEDORES VALUES (56, 'Peugeot', 'Calle 56, Ciudad', '123456766', 'contact@peugeot.com');
+INSERT INTO PROVEEDORES VALUES (57, 'Citroën', 'Avenida 57, Ciudad', '123456767', 'contact@citroen.com');
+INSERT INTO PROVEEDORES VALUES (58, 'Renault', 'Boulevard 58, Ciudad', '123456768', 'contact@renault.com');
+INSERT INTO PROVEEDORES VALUES (59, 'Opel', 'Calle 59, Ciudad', '123456769', 'contact@opel.com');
+INSERT INTO PROVEEDORES VALUES (60, 'Vauxhall', 'Avenida 60, Ciudad', '123456770', 'contact@vauxhall.com');
+INSERT INTO PROVEEDORES VALUES (61, 'Holden', 'Boulevard 61, Ciudad', '123456771', 'contact@holden.com');
+INSERT INTO PROVEEDORES VALUES (62, 'Rover', 'Calle 62, Ciudad', '123456772', 'contact@rover.com');
+INSERT INTO PROVEEDORES VALUES (63, 'MG', 'Avenida 63, Ciudad', '123456773', 'contact@mg.com');
+INSERT INTO PROVEEDORES VALUES (64, 'Lotus', 'Boulevard 64, Ciudad', '123456774', 'contact@lotus.com');
+INSERT INTO PROVEEDORES VALUES (65, 'Aston Martin', 'Calle 65, Ciudad', '123456775', 'contact@astonmartin.com');
+INSERT INTO PROVEEDORES VALUES (66, 'Bentley', 'Avenida 66, Ciudad', '123456776', 'contact@bentley.com');
+INSERT INTO PROVEEDORES VALUES (67, 'Rolls-Royce', 'Boulevard 67, Ciudad', '123456777', 'contact@rolls-royce.com');
+INSERT INTO PROVEEDORES VALUES (68, 'Morgan', 'Calle 68, Ciudad', '123456778', 'contact@morgan.com');
+INSERT INTO PROVEEDORES VALUES (69, 'McLaren', 'Avenida 69, Ciudad', '123456779', 'contact@mclaren.com');
+INSERT INTO PROVEEDORES VALUES (70, 'Pagani', 'Boulevard 70, Ciudad', '123456780', 'contact@pagani.com');
+INSERT INTO PROVEEDORES VALUES (71, 'Bugatti', 'Calle 71, Ciudad', '123456781', 'contact@bugatti.com');
+INSERT INTO PROVEEDORES VALUES (72, 'Koenigsegg', 'Avenida 72, Ciudad', '123456782', 'contact@koenigsegg.com');
+INSERT INTO PROVEEDORES VALUES (73, 'Tesla', 'Boulevard 73, Ciudad', '123456783', 'contact@tesla.com');
+INSERT INTO PROVEEDORES VALUES (74, 'Polestar', 'Calle 74, Ciudad', '123456784', 'contact@polestar.com');
+INSERT INTO PROVEEDORES VALUES (75, 'Lucid Motors', 'Avenida 75, Ciudad', '123456785', 'contact@lucidmotors.com');
+INSERT INTO PROVEEDORES VALUES (76, 'Rivian', 'Boulevard 76, Ciudad', '123456786', 'contact@rivian.com');
+INSERT INTO PROVEEDORES VALUES (77, 'Fisker', 'Calle 77, Ciudad', '123456787', 'contact@fisker.com');
+INSERT INTO PROVEEDORES VALUES (78, 'Faraday Future', 'Avenida 78, Ciudad', '123456788', 'contact@faradayfuture.com');
+INSERT INTO PROVEEDORES VALUES (79, 'Byton', 'Boulevard 79, Ciudad', '123456789', 'contact@byton.com');
+INSERT INTO PROVEEDORES VALUES (80, 'Nio', 'Calle 80, Ciudad', '123456790', 'contact@nio.com');
+INSERT INTO PROVEEDORES VALUES (81, 'Xpeng', 'Avenida 81, Ciudad', '123456791', 'contact@xpeng.com');
+INSERT INTO PROVEEDORES VALUES (82, 'Li Auto', 'Boulevard 82, Ciudad', '123456792', 'contact@liauto.com');
+INSERT INTO PROVEEDORES VALUES (83, 'Geely', 'Calle 83, Ciudad', '123456793', 'contact@geely.com');
+INSERT INTO PROVEEDORES VALUES (84, 'Changan', 'Avenida 84, Ciudad', '123456794', 'contact@changan.com');
+INSERT INTO PROVEEDORES VALUES (85, 'Great Wall', 'Boulevard 85, Ciudad', '123456795', 'contact@greatwall.com');
+INSERT INTO PROVEEDORES VALUES (86, 'BYD', 'Calle 86, Ciudad', '123456796', 'contact@byd.com');
+INSERT INTO PROVEEDORES VALUES (87, 'FAW', 'Avenida 87, Ciudad', '123456797', 'contact@faw.com');
+INSERT INTO PROVEEDORES VALUES (88, 'Dongfeng', 'Boulevard 88, Ciudad', '123456798', 'contact@dongfeng.com');
+INSERT INTO PROVEEDORES VALUES (89, 'BAIC', 'Calle 89, Ciudad', '123456799', 'contact@baic.com');
+INSERT INTO PROVEEDORES VALUES (90, 'GAC', 'Avenida 90, Ciudad', '123456800', 'contact@gac.com');
+INSERT INTO PROVEEDORES VALUES (91, 'Haval', 'Boulevard 91, Ciudad', '123456801', 'contact@haval.com');
+INSERT INTO PROVEEDORES VALUES (92, 'Chery', 'Calle 92, Ciudad', '123456802', 'contact@chery.com');
+INSERT INTO PROVEEDORES VALUES (93, 'Zotye', 'Avenida 93, Ciudad', '123456803', 'contact@zotye.com');
+INSERT INTO PROVEEDORES VALUES (94, 'Lifan', 'Boulevard 94, Ciudad', '123456804', 'contact@lifan.com');
+INSERT INTO PROVEEDORES VALUES (95, 'Mahindra', 'Calle 95, Ciudad', '123456805', 'contact@mahindra.com');
+INSERT INTO PROVEEDORES VALUES (96, 'Tata Motors', 'Avenida 96, Ciudad', '123456806', 'contact@tatamotors.com');
+INSERT INTO PROVEEDORES VALUES (97, 'Maruti Suzuki', 'Boulevard 97, Ciudad', '123456807', 'contact@marutisuzuki.com');
+INSERT INTO PROVEEDORES VALUES (98, 'Proton', 'Calle 98, Ciudad', '123456808', 'contact@proton.com');
+INSERT INTO PROVEEDORES VALUES (99, 'Perodua', 'Avenida 99, Ciudad', '123456809', 'contact@perodua.com');
+INSERT INTO PROVEEDORES VALUES (100, 'SsangYong', 'Boulevard 100, Ciudad', '123456810', 'contact@ssangyong.com');
+INSERT INTO PROVEEDORES VALUES (101, 'Saipa', 'Calle 101, Ciudad', '123456811', 'contact@saipa.com');
+INSERT INTO PROVEEDORES VALUES (102, 'Iran Khodro', 'Avenida 102, Ciudad', '123456812', 'contact@irankhodro.com');
+INSERT INTO PROVEEDORES VALUES (103, 'Wuling', 'Boulevard 103, Ciudad', '123456813', 'contact@wuling.com');
+INSERT INTO PROVEEDORES VALUES (104, 'Baojun', 'Calle 104, Ciudad', '123456814', 'contact@baojun.com');
+INSERT INTO PROVEEDORES VALUES (105, 'Roewe', 'Avenida 105, Ciudad', '123456815', 'contact@roewe.com');
+INSERT INTO PROVEEDORES VALUES (106, 'MG', 'Boulevard 106, Ciudad', '123456816', 'contact@mg.com');
+INSERT INTO PROVEEDORES VALUES (107, 'Trumpchi', 'Calle 107, Ciudad', '123456817', 'contact@trumpchi.com');
+INSERT INTO PROVEEDORES VALUES (108, 'Lynk & Co', 'Avenida 108, Ciudad', '123456818', 'contact@lynkco.com');
+INSERT INTO PROVEEDORES VALUES (109, 'Zhejiang Geely Holding Group', 'Boulevard 109, Ciudad', '123456819', 'contact@geelygroup.com');
+INSERT INTO PROVEEDORES VALUES (110, 'Brilliance Auto', 'Calle 110, Ciudad', '123456820', 'contact@brillianceauto.com');
+INSERT INTO PROVEEDORES VALUES (111, 'JAC Motors', 'Avenida 111, Ciudad', '123456821', 'contact@jacmotors.com');
+INSERT INTO PROVEEDORES VALUES (112, 'Haima', 'Boulevard 112, Ciudad', '123456822', 'contact@haima.com');
+INSERT INTO PROVEEDORES VALUES (113, 'Maxus', 'Calle 113, Ciudad', '123456823', 'contact@maxus.com');
+INSERT INTO PROVEEDORES VALUES (114, 'JMC', 'Avenida 114, Ciudad', '123456824', 'contact@jmc.com');
+INSERT INTO PROVEEDORES VALUES (115, 'Dongfeng Motor Corporation', 'Boulevard 115, Ciudad', '123456825', 'contact@dongfeng.com');
+INSERT INTO PROVEEDORES VALUES (116, 'Beijing Automotive Group', 'Calle 116, Ciudad', '123456826', 'contact@beijingauto.com');
+INSERT INTO PROVEEDORES VALUES (117, 'Foton', 'Avenida 117, Ciudad', '123456827', 'contact@foton.com');
+INSERT INTO PROVEEDORES VALUES (118, 'King Long', 'Boulevard 118, Ciudad', '123456828', 'contact@kinglong.com');
+INSERT INTO PROVEEDORES VALUES (119, 'Higer', 'Calle 119, Ciudad', '123456829', 'contact@higer.com');
+INSERT INTO PROVEEDORES VALUES (120, 'Yutong', 'Avenida 120, Ciudad', '123456830', 'contact@yutong.com');
+INSERT INTO PROVEEDORES VALUES (121, 'CNHTC', 'Boulevard 121, Ciudad', '123456831', 'contact@cnhtc.com');
+INSERT INTO PROVEEDORES VALUES (122, 'SAIC Motor', 'Calle 122, Ciudad', '123456832', 'contact@saicmotor.com');
+INSERT INTO PROVEEDORES VALUES (123, 'Chery', 'Avenida 123, Ciudad', '123456833', 'contact@chery.com');
+INSERT INTO PROVEEDORES VALUES (124, 'Great Wall Motors', 'Boulevard 124, Ciudad', '123456834', 'contact@greatwallmotors.com');
+INSERT INTO PROVEEDORES VALUES (125, 'BYD Auto', 'Calle 125, Ciudad', '123456835', 'contact@bydauto.com');
+INSERT INTO PROVEEDORES VALUES (126, 'FAW Group', 'Avenida 126, Ciudad', '123456836', 'contact@fawgroup.com');
+INSERT INTO PROVEEDORES VALUES (127, 'Geely Auto', 'Boulevard 127, Ciudad', '123456837', 'contact@geelyauto.com');
+INSERT INTO PROVEEDORES VALUES (128, 'Dongfeng Liuzhou Motor', 'Calle 128, Ciudad', '123456838', 'contact@dfmotor.com');
+INSERT INTO PROVEEDORES VALUES (129, 'Zotye Auto', 'Avenida 129, Ciudad', '123456839', 'contact@zotyeauto.com');
+INSERT INTO PROVEEDORES VALUES (130, 'Hawtai Motor', 'Boulevard 130, Ciudad', '123456840', 'contact@hawtai.com');
+INSERT INTO PROVEEDORES VALUES (131, 'BAIC Group', 'Calle 131, Ciudad', '123456841', 'contact@baicgroup.com');
+INSERT INTO PROVEEDORES VALUES (132, 'Brilliance Auto', 'Avenida 132, Ciudad', '123456842', 'contact@brillianceauto.com');
+INSERT INTO PROVEEDORES VALUES (133, 'Changfeng Motor', 'Boulevard 133, Ciudad', '123456843', 'contact@changfengmotor.com');
+INSERT INTO PROVEEDORES VALUES (134, 'JAC Motors', 'Calle 134, Ciudad', '123456844', 'contact@jacmotors.com');
+INSERT INTO PROVEEDORES VALUES (135, 'GAC Group', 'Avenida 135, Ciudad', '123456845', 'contact@gacgroup.com');
+INSERT INTO PROVEEDORES VALUES (136, 'Hongqi', 'Boulevard 136, Ciudad', '123456846', 'contact@hongqi.com');
+INSERT INTO PROVEEDORES VALUES (137, 'Soueast Motors', 'Calle 137, Ciudad', '123456847', 'contact@soueastmotors.com');
+INSERT INTO PROVEEDORES VALUES (138, 'JMCG', 'Avenida 138, Ciudad', '123456848', 'contact@jmcg.com');
+INSERT INTO PROVEEDORES VALUES (139, 'Haima Automobile', 'Boulevard 139, Ciudad', '123456849', 'contact@haimaauto.com');
+INSERT INTO PROVEEDORES VALUES (140, 'Jinbei', 'Calle 140, Ciudad', '123456850', 'contact@jinbei.com');
+INSERT INTO PROVEEDORES VALUES (141, 'Haval', 'Avenida 141, Ciudad', '123456851', 'contact@haval.com');
+INSERT INTO PROVEEDORES VALUES (142, 'Changan Automobile', 'Boulevard 142, Ciudad', '123456852', 'contact@changan.com');
+INSERT INTO PROVEEDORES VALUES (143, 'Nio', 'Calle 143, Ciudad', '123456853', 'contact@nio.com');
+INSERT INTO PROVEEDORES VALUES (144, 'Xpeng Motors', 'Avenida 144, Ciudad', '123456854', 'contact@xpeng.com');
+INSERT INTO PROVEEDORES VALUES (145, 'Li Auto', 'Boulevard 145, Ciudad', '123456855', 'contact@liauto.com');
+INSERT INTO PROVEEDORES VALUES (146, 'GAC New Energy', 'Calle 146, Ciudad', '123456856', 'contact@gacnewenergy.com');
+INSERT INTO PROVEEDORES VALUES (147, 'SAIC-GM-Wuling', 'Avenida 147, Ciudad', '123456857', 'contact@saicgmwuling.com');
+INSERT INTO PROVEEDORES VALUES (148, 'Jiangling Motors', 'Boulevard 148, Ciudad', '123456858', 'contact@jiangling.com');
+INSERT INTO PROVEEDORES VALUES (149, 'Yutong Bus', 'Calle 149, Ciudad', '123456859', 'contact@yutongbus.com');
+INSERT INTO PROVEEDORES VALUES (150, 'King Long Motor', 'Avenida 150, Ciudad', '123456860', 'contact@kinglongmotor.com');
+INSERT INTO PROVEEDORES VALUES (151, 'Higer Bus', 'Boulevard 151, Ciudad', '123456861', 'contact@higerbus.com');
+INSERT INTO PROVEEDORES VALUES (152, 'Sunwin Bus', 'Calle 152, Ciudad', '123456862', 'contact@sunwinbus.com');
+INSERT INTO PROVEEDORES VALUES (153, 'Zhongtong Bus', 'Avenida 153, Ciudad', '123456863', 'contact@zhongtongbus.com');
+INSERT INTO PROVEEDORES VALUES (154, 'BYD Bus', 'Boulevard 154, Ciudad', '123456864', 'contact@bydbus.com');
+INSERT INTO PROVEEDORES VALUES (155, 'Foton AUV Bus', 'Calle 155, Ciudad', '123456865', 'contact@fotonauv.com');
+INSERT INTO PROVEEDORES VALUES (156, 'Ankai Bus', 'Avenida 156, Ciudad', '123456866', 'contact@ankaibus.com');
+INSERT INTO PROVEEDORES VALUES (157, 'Jiangsu Alfa', 'Boulevard 157, Ciudad', '123456867', 'contact@jiangsu-alfa.com');
+INSERT INTO PROVEEDORES VALUES (158, 'CSR Ziyang', 'Calle 158, Ciudad', '123456868', 'contact@csrziyang.com');
+INSERT INTO PROVEEDORES VALUES (159, 'CRRC', 'Avenida 159, Ciudad', '123456869', 'contact@crrc.com');
+INSERT INTO PROVEEDORES VALUES (160, 'Nanjing SR Puzhen', 'Boulevard 160, Ciudad', '123456870', 'contact@srpuzhen.com');
+INSERT INTO PROVEEDORES VALUES (161, 'CSR Qingdao Sifang', 'Calle 161, Ciudad', '123456871', 'contact@csrsifang.com');
+INSERT INTO PROVEEDORES VALUES (162, 'Zhuzhou CRRC Times Electric', 'Avenida 162, Ciudad', '123456872', 'contact@crrctimes.com');
+INSERT INTO PROVEEDORES VALUES (163, 'CSR Zhuzhou', 'Boulevard 163, Ciudad', '123456873', 'contact@csrzhuzhou.com');
+INSERT INTO PROVEEDORES VALUES (164, 'CRRC Shijiazhuang', 'Calle 164, Ciudad', '123456874', 'contact@crrcshijiazhuang.com');
+INSERT INTO PROVEEDORES VALUES (165, 'China Northern Locomotive', 'Avenida 165, Ciudad', '123456875', 'contact@cnlocomotive.com');
+INSERT INTO PROVEEDORES VALUES (166, 'China Southern Locomotive', 'Boulevard 166, Ciudad', '123456876', 'contact@cslocomotive.com');
+INSERT INTO PROVEEDORES VALUES (167, 'China National Heavy Duty Truck', 'Calle 167, Ciudad', '123456877', 'contact@cnhdt.com');
+INSERT INTO PROVEEDORES VALUES (168, 'Beiqi Foton Motor', 'Avenida 168, Ciudad', '123456878', 'contact@beiqifoton.com');
+INSERT INTO PROVEEDORES VALUES (169, 'Shaanxi Automobile Group', 'Boulevard 169, Ciudad', '123456879', 'contact@shaanxiauto.com');
+INSERT INTO PROVEEDORES VALUES (170, 'JAC Motors', 'Calle 170, Ciudad', '123456880', 'contact@jacmotors.com');
+INSERT INTO PROVEEDORES VALUES (171, 'Dongfeng Commercial Vehicle', 'Avenida 171, Ciudad', '123456881', 'contact@dfcv.com');
+INSERT INTO PROVEEDORES VALUES (172, 'FAW Jiefang', 'Boulevard 172, Ciudad', '123456882', 'contact@fawjiefang.com');
+INSERT INTO PROVEEDORES VALUES (173, 'Ankai Automobile', 'Calle 173, Ciudad', '123456883', 'contact@ankaiauto.com');
+INSERT INTO PROVEEDORES VALUES (174, 'Beiqi Yinxiang', 'Avenida 174, Ciudad', '123456884', 'contact@beiqiyinxiang.com');
+INSERT INTO PROVEEDORES VALUES (175, 'Huanghai Auto', 'Boulevard 175, Ciudad', '123456885', 'contact@huanghaiauto.com');
+INSERT INTO PROVEEDORES VALUES (176, 'Zhongxing Automobile', 'Calle 176, Ciudad', '123456886', 'contact@zhongxingauto.com');
+INSERT INTO PROVEEDORES VALUES (177, 'Yema Auto', 'Avenida 177, Ciudad', '123456887', 'contact@yemaauto.com');
+INSERT INTO PROVEEDORES VALUES (178, 'Dayun Group', 'Boulevard 178, Ciudad', '123456888', 'contact@dayungroup.com');
+INSERT INTO PROVEEDORES VALUES (179, 'Shacman', 'Calle 179, Ciudad', '123456889', 'contact@shacman.com');
+INSERT INTO PROVEEDORES VALUES (180, 'Dongfeng Sokon', 'Avenida 180, Ciudad', '123456890', 'contact@dfsk.com');
+INSERT INTO PROVEEDORES VALUES (181, 'BYD Commercial Vehicle', 'Boulevard 181, Ciudad', '123456891', 'contact@bydcommercial.com');
+INSERT INTO PROVEEDORES VALUES (182, 'FAW Commercial Vehicle', 'Calle 182, Ciudad', '123456892', 'contact@fawcommercial.com');
+INSERT INTO PROVEEDORES VALUES (183, 'Changan Commercial Vehicle', 'Avenida 183, Ciudad', '123456893', 'contact@changancommercial.com');
+INSERT INTO PROVEEDORES VALUES (184, 'JMC Commercial Vehicle', 'Boulevard 184, Ciudad', '123456894', 'contact@jmccommercial.com');
+INSERT INTO PROVEEDORES VALUES (185, 'SAIC Commercial Vehicle', 'Calle 185, Ciudad', '123456895', 'contact@saiccommercial.com');
+INSERT INTO PROVEEDORES VALUES (186, 'Dongfeng Heavy Truck', 'Avenida 186, Ciudad', '123456896', 'contact@dongfengheavy.com');
+INSERT INTO PROVEEDORES VALUES (187, 'JAC Heavy Duty', 'Boulevard 187, Ciudad', '123456897', 'contact@jacheavyduty.com');
+INSERT INTO PROVEEDORES VALUES (188, 'Shaanxi Heavy Duty', 'Calle 188, Ciudad', '123456898', 'contact@shaanxiheavy.com');
+INSERT INTO PROVEEDORES VALUES (189, 'FAW Heavy Truck', 'Avenida 189, Ciudad', '123456899', 'contact@fawheavy.com');
+INSERT INTO PROVEEDORES VALUES (190, 'Changan Heavy Truck', 'Boulevard 190, Ciudad', '123456900', 'contact@changanheavy.com');
+INSERT INTO PROVEEDORES VALUES (191, 'BYD Heavy Truck', 'Calle 191, Ciudad', '123456901', 'contact@bydheavy.com');
+INSERT INTO PROVEEDORES VALUES (192, 'Dongfeng Heavy Duty', 'Avenida 192, Ciudad', '123456902', 'contact@dongfengheavyduty.com');
+INSERT INTO PROVEEDORES VALUES (193, 'JMC Heavy Duty', 'Boulevard 193, Ciudad', '123456903', 'contact@jmcheavyduty.com');
+INSERT INTO PROVEEDORES VALUES (194, 'SAIC Heavy Truck', 'Calle 194, Ciudad', '123456904', 'contact@saicheavytruck.com');
+INSERT INTO PROVEEDORES VALUES (195, 'Shaanxi Commercial Vehicle', 'Avenida 195, Ciudad', '123456905', 'contact@shaanxicv.com');
+INSERT INTO PROVEEDORES VALUES (196, 'JAC Commercial Vehicle', 'Boulevard 196, Ciudad', '123456906', 'contact@jaccommercial.com');
+INSERT INTO PROVEEDORES VALUES (197, 'Dongfeng Commercial', 'Calle 197, Ciudad', '123456907', 'contact@dongfengcommercial.com');
+INSERT INTO PROVEEDORES VALUES (198, 'Changan Commercial', 'Avenida 198, Ciudad', '123456908', 'contact@changancommercial.com');
+INSERT INTO PROVEEDORES VALUES (199, 'FAW Commercial', 'Boulevard 199, Ciudad', '123456909', 'contact@fawcommercial.com');
+INSERT INTO PROVEEDORES VALUES (200, 'BYD Commercial', 'Calle 200, Ciudad', '123456910', 'contact@bydcommercial.com');
 
+-- Insertar datos en la tabla: SERVICIOS
+INSERT INTO SERVICIOS VALUES (1, 'Cambio de aceite', 50);
+INSERT INTO SERVICIOS VALUES (2, 'Alineación y balanceo', 40);
+INSERT INTO SERVICIOS VALUES (3, 'Revisión de frenos', 30);
+INSERT INTO SERVICIOS VALUES (4, 'Cambio de bujías', 25);
+INSERT INTO SERVICIOS VALUES (5, 'Cambio de llantas', 200);
+INSERT INTO SERVICIOS VALUES (6, 'Diagnóstico general', 70);
+INSERT INTO SERVICIOS VALUES (7, 'Cambio de batería', 80);
+INSERT INTO SERVICIOS VALUES (8, 'Revisión de suspensión', 60);
+INSERT INTO SERVICIOS VALUES (9, 'Reparación de motor', 500);
+INSERT INTO SERVICIOS VALUES (10, 'Revisión de transmisión', 100);
+INSERT INTO SERVICIOS VALUES (11, 'Reparación de aire acondicionado', 150);
+INSERT INTO SERVICIOS VALUES (12, 'Limpieza de inyectores', 45);
+INSERT INTO SERVICIOS VALUES (13, 'Ajuste de válvulas', 60);
+INSERT INTO SERVICIOS VALUES (14, 'Revisión de sistema eléctrico', 70);
+INSERT INTO SERVICIOS VALUES (15, 'Reparación de alternador', 120);
+INSERT INTO SERVICIOS VALUES (16, 'Cambio de correas', 90);
+INSERT INTO SERVICIOS VALUES (17, 'Cambio de bomba de agua', 140);
+INSERT INTO SERVICIOS VALUES (18, 'Reparación de radiador', 130);
+INSERT INTO SERVICIOS VALUES (19, 'Cambio de termostato', 40);
+INSERT INTO SERVICIOS VALUES (20, 'Revisión de dirección hidráulica', 75);
+INSERT INTO SERVICIOS VALUES (21, 'Revisión de escape', 60);
+INSERT INTO SERVICIOS VALUES (22, 'Ajuste de frenos', 35);
+INSERT INTO SERVICIOS VALUES (23, 'Cambio de embrague', 220);
+INSERT INTO SERVICIOS VALUES (24, 'Reparación de parabrisas', 80);
+INSERT INTO SERVICIOS VALUES (25, 'Cambio de luces', 50);
+INSERT INTO SERVICIOS VALUES (26, 'Revisión de amortiguadores', 70);
+INSERT INTO SERVICIOS VALUES (27, 'Revisión de sensores', 55);
+INSERT INTO SERVICIOS VALUES (28, 'Cambio de bujías de precalentamiento', 30);
+INSERT INTO SERVICIOS VALUES (29, 'Limpieza de motor', 100);
+INSERT INTO SERVICIOS VALUES (30, 'Alineación de faros', 40);
+INSERT INTO SERVICIOS VALUES (31, 'Revisión de caja de cambios', 110);
+INSERT INTO SERVICIOS VALUES (32, 'Cambio de aceite de transmisión', 65);
+INSERT INTO SERVICIOS VALUES (33, 'Reparación de suspensión', 250);
+INSERT INTO SERVICIOS VALUES (34, 'Cambio de filtros de aire acondicionado', 40);
+INSERT INTO SERVICIOS VALUES (35, 'Limpieza de radiador', 70);
+INSERT INTO SERVICIOS VALUES (36, 'Revisión de bujes', 50);
+INSERT INTO SERVICIOS VALUES (37, 'Reparación de sistema de frenos', 200);
+INSERT INTO SERVICIOS VALUES (38, 'Cambio de bomba de freno', 90);
+INSERT INTO SERVICIOS VALUES (39, 'Reparación de caja de dirección', 150);
+INSERT INTO SERVICIOS VALUES (40, 'Revisión de sistema de refrigeración', 75);
+INSERT INTO SERVICIOS VALUES (41, 'Cambio de rótulas', 60);
+INSERT INTO SERVICIOS VALUES (42, 'Revisión de embrague', 85);
+INSERT INTO SERVICIOS VALUES (43, 'Reparación de diferencial', 180);
+INSERT INTO SERVICIOS VALUES (44, 'Cambio de pastillas de freno', 40);
+INSERT INTO SERVICIOS VALUES (45, 'Revisión de inyección electrónica', 70);
+INSERT INTO SERVICIOS VALUES (46, 'Reparación de motor eléctrico', 200);
+INSERT INTO SERVICIOS VALUES (47, 'Cambio de líquido de frenos', 30);
+INSERT INTO SERVICIOS VALUES (48, 'Revisión de circuito de luces', 35);
+INSERT INTO SERVICIOS VALUES (49, 'Cambio de bobina de encendido', 50);
+INSERT INTO SERVICIOS VALUES (50, 'Revisión de sistema de escape', 60);
+INSERT INTO SERVICIOS VALUES (51, 'Reparación de caja automática', 300);
+INSERT INTO SERVICIOS VALUES (52, 'Cambio de pastillas de embrague', 150);
+INSERT INTO SERVICIOS VALUES (53, 'Limpieza de sistema de escape', 80);
+INSERT INTO SERVICIOS VALUES (54, 'Revisión de transmisión manual', 110);
+INSERT INTO SERVICIOS VALUES (55, 'Cambio de llantas de invierno', 220);
+INSERT INTO SERVICIOS VALUES (56, 'Reparación de mangueras de refrigeración', 75);
+INSERT INTO SERVICIOS VALUES (57, 'Cambio de sensores de temperatura', 40);
+INSERT INTO SERVICIOS VALUES (58, 'Revisión de sistema de aire acondicionado', 120);
+INSERT INTO SERVICIOS VALUES (59, 'Limpieza de cuerpo de aceleración', 60);
+INSERT INTO SERVICIOS VALUES (60, 'Cambio de discos de freno', 130);
+INSERT INTO SERVICIOS VALUES (61, 'Reparación de transmisión CVT', 400);
+INSERT INTO SERVICIOS VALUES (62, 'Cambio de aceite de motor', 50);
+INSERT INTO SERVICIOS VALUES (63, 'Revisión de bomba de combustible', 100);
+INSERT INTO SERVICIOS VALUES (64, 'Cambio de cables de bujías', 30);
+INSERT INTO SERVICIOS VALUES (65, 'Revisión de sistema de calefacción', 80);
+INSERT INTO SERVICIOS VALUES (66, 'Reparación de inyección directa', 150);
+INSERT INTO SERVICIOS VALUES (67, 'Cambio de correa de distribución', 140);
+INSERT INTO SERVICIOS VALUES (68, 'Revisión de correa auxiliar', 50);
+INSERT INTO SERVICIOS VALUES (69, 'Limpieza de sistema de admisión', 90);
+INSERT INTO SERVICIOS VALUES (70, 'Revisión de sistema eléctrico', 100);
+INSERT INTO SERVICIOS VALUES (71, 'Reparación de alternador', 130);
+INSERT INTO SERVICIOS VALUES (72, 'Cambio de líquido refrigerante', 60);
+INSERT INTO SERVICIOS VALUES (73, 'Revisión de niveles de fluidos', 30);
+INSERT INTO SERVICIOS VALUES (74, 'Reparación de motor turbo', 500);
+INSERT INTO SERVICIOS VALUES (75, 'Cambio de sensores de oxígeno', 70);
+INSERT INTO SERVICIOS VALUES (76, 'Revisión de sistema de seguridad', 40);
+INSERT INTO SERVICIOS VALUES (77, 'Limpieza de carburador', 60);
+INSERT INTO SERVICIOS VALUES (78, 'Reparación de eje de transmisión', 200);
+INSERT INTO SERVICIOS VALUES (79, 'Cambio de amortiguadores', 150);
+INSERT INTO SERVICIOS VALUES (80, 'Revisión de sistema de frenado', 80);
+INSERT INTO SERVICIOS VALUES (81, 'Reparación de sistema de dirección', 120);
+INSERT INTO SERVICIOS VALUES (82, 'Cambio de parabrisas', 100);
+INSERT INTO SERVICIOS VALUES (83, 'Revisión de suspensión trasera', 90);
+INSERT INTO SERVICIOS VALUES (84, 'Limpieza de sistema de refrigeración', 80);
+INSERT INTO SERVICIOS VALUES (85, 'Reparación de sistema de combustible', 150);
+INSERT INTO SERVICIOS VALUES (86, 'Cambio de rótulas de dirección', 100);
+INSERT INTO SERVICIOS VALUES (87, 'Revisión de sistema de climatización', 70);
+INSERT INTO SERVICIOS VALUES (88, 'Limpieza de sistema de frenos ABS', 100);
+INSERT INTO SERVICIOS VALUES (89, 'Reparación de sistema de tracción', 200);
+INSERT INTO SERVICIOS VALUES (90, 'Cambio de discos de embrague', 180);
+INSERT INTO SERVICIOS VALUES (91, 'Revisión de presión de neumáticos', 30);
+INSERT INTO SERVICIOS VALUES (92, 'Limpieza de sistema de suspensión', 70);
+INSERT INTO SERVICIOS VALUES (93, 'Cambio de fluidos de transmisión', 60);
+INSERT INTO SERVICIOS VALUES (94, 'Reparación de bomba de dirección', 140);
+INSERT INTO SERVICIOS VALUES (95, 'Cambio de aceite diferencial', 50);
+INSERT INTO SERVICIOS VALUES (96, 'Revisión de niveles de aceite', 30);
+INSERT INTO SERVICIOS VALUES (97, 'Limpieza de sistema de dirección', 60);
+INSERT INTO SERVICIOS VALUES (98, 'Cambio de mangueras de refrigeración', 50);
+INSERT INTO SERVICIOS VALUES (99, 'Reparación de motor diésel', 400);
+INSERT INTO SERVICIOS VALUES (100, 'Cambio de bujías incandescentes', 40);
+INSERT INTO SERVICIOS VALUES (101, 'Revisión de sistema de combustible', 80);
+INSERT INTO SERVICIOS VALUES (102, 'Cambio de filtro de aire', 30);
+INSERT INTO SERVICIOS VALUES (103, 'Reparación de sistema de inyección', 150);
+INSERT INTO SERVICIOS VALUES (104, 'Cambio de correa trapezoidal', 60);
+INSERT INTO SERVICIOS VALUES (105, 'Revisión de sistema de escape', 90);
+INSERT INTO SERVICIOS VALUES (106, 'Reparación de sistema de dirección asistida', 200);
+INSERT INTO SERVICIOS VALUES (107, 'Cambio de aceite hidráulico', 60);
+INSERT INTO SERVICIOS VALUES (108, 'Revisión de niveles de refrigerante', 30);
+INSERT INTO SERVICIOS VALUES (109, 'Limpieza de sistema de lubricación', 80);
+INSERT INTO SERVICIOS VALUES (110, 'Reparación de sistema de tracción integral', 300);
+INSERT INTO SERVICIOS VALUES (111, 'Cambio de disco de freno trasero', 120);
+INSERT INTO SERVICIOS VALUES (112, 'Revisión de sistema de escape', 70);
+INSERT INTO SERVICIOS VALUES (113, 'Limpieza de radiador de aceite', 50);
+INSERT INTO SERVICIOS VALUES (114, 'Reparación de bomba de agua', 140);
+INSERT INTO SERVICIOS VALUES (115, 'Cambio de correa del alternador', 50);
+INSERT INTO SERVICIOS VALUES (116, 'Revisión de niveles de freno', 30);
+INSERT INTO SERVICIOS VALUES (117, 'Reparación de sistema de inyección electrónica', 160);
+INSERT INTO SERVICIOS VALUES (118, 'Cambio de bomba de freno', 100);
+INSERT INTO SERVICIOS VALUES (119, 'Revisión de presión de frenos', 50);
+INSERT INTO SERVICIOS VALUES (120, 'Reparación de sistema de lubricación', 130);
+INSERT INTO SERVICIOS VALUES (121, 'Cambio de amortiguadores traseros', 180);
+INSERT INTO SERVICIOS VALUES (122, 'Revisión de sistema de transmisión', 120);
+INSERT INTO SERVICIOS VALUES (123, 'Reparación de alternador', 150);
+INSERT INTO SERVICIOS VALUES (124, 'Cambio de polea de alternador', 40);
+INSERT INTO SERVICIOS VALUES (125, 'Revisión de compresor de aire acondicionado', 70);
+INSERT INTO SERVICIOS VALUES (126, 'Reparación de frenos de mano', 90);
+INSERT INTO SERVICIOS VALUES (127, 'Cambio de frenos traseros', 120);
+INSERT INTO SERVICIOS VALUES (128, 'Revisión de sistema eléctrico', 60);
+INSERT INTO SERVICIOS VALUES (129, 'Reparación de motor de arranque', 130);
+INSERT INTO SERVICIOS VALUES (130, 'Cambio de filtros de aceite', 40);
+INSERT INTO SERVICIOS VALUES (131, 'Revisión de batería', 30);
+INSERT INTO SERVICIOS VALUES (132, 'Limpieza de circuito de refrigeración', 90);
+INSERT INTO SERVICIOS VALUES (133, 'Cambio de pastillas de freno trasero', 80);
+INSERT INTO SERVICIOS VALUES (134, 'Revisión de compresor de aire', 100);
+INSERT INTO SERVICIOS VALUES (135, 'Reparación de sistema de ventilación', 160);
+INSERT INTO SERVICIOS VALUES (136, 'Cambio de amortiguadores delanteros', 200);
+INSERT INTO SERVICIOS VALUES (137, 'Revisión de sistema de aire', 90);
+INSERT INTO SERVICIOS VALUES (138, 'Limpieza de sistema de calefacción', 70);
+INSERT INTO SERVICIOS VALUES (139, 'Cambio de líquido de dirección', 60);
+INSERT INTO SERVICIOS VALUES (140, 'Revisión de niveles de dirección', 30);
+INSERT INTO SERVICIOS VALUES (141, 'Reparación de diferencial trasero', 180);
+INSERT INTO SERVICIOS VALUES (142, 'Cambio de palier', 90);
+INSERT INTO SERVICIOS VALUES (143, 'Revisión de sistema de ventilación', 80);
+INSERT INTO SERVICIOS VALUES (144, 'Limpieza de motor diésel', 150);
+INSERT INTO SERVICIOS VALUES (145, 'Cambio de bomba de vacío', 100);
+INSERT INTO SERVICIOS VALUES (146, 'Revisión de sistema de vacío', 50);
+INSERT INTO SERVICIOS VALUES (147, 'Reparación de turbo', 400);
+INSERT INTO SERVICIOS VALUES (148, 'Cambio de actuador de turbo', 150);
+INSERT INTO SERVICIOS VALUES (149, 'Revisión de niveles de turbo', 60);
+INSERT INTO SERVICIOS VALUES (150, 'Limpieza de intercooler', 70);
+INSERT INTO SERVICIOS VALUES (151, 'Cambio de compresor de turbo', 180);
+INSERT INTO SERVICIOS VALUES (152, 'Revisión de sensor de presión', 40);
+INSERT INTO SERVICIOS VALUES (153, 'Reparación de compresor de turbo', 200);
+INSERT INTO SERVICIOS VALUES (154, 'Cambio de filtro de combustible', 60);
+INSERT INTO SERVICIOS VALUES (155, 'Revisión de presión de combustible', 50);
+INSERT INTO SERVICIOS VALUES (156, 'Limpieza de sistema de inyección', 120);
+INSERT INTO SERVICIOS VALUES (157, 'Cambio de filtros de aire acondicionado', 40);
+INSERT INTO SERVICIOS VALUES (158, 'Revisión de sistema de lubricación', 70);
+INSERT INTO SERVICIOS VALUES (159, 'Reparación de sistema de escape', 150);
+INSERT INTO SERVICIOS VALUES (160, 'Cambio de mangueras de combustible', 50);
+INSERT INTO SERVICIOS VALUES (161, 'Revisión de niveles de combustible', 30);
+INSERT INTO SERVICIOS VALUES (162, 'Limpieza de inyectores de combustible', 60);
+INSERT INTO SERVICIOS VALUES (163, 'Reparación de compresor de aire', 100);
+INSERT INTO SERVICIOS VALUES (164, 'Cambio de filtros de aire', 50);
+INSERT INTO SERVICIOS VALUES (165, 'Revisión de presión de turbo', 80);
+INSERT INTO SERVICIOS VALUES (166, 'Limpieza de sistema de turbo', 90);
+INSERT INTO SERVICIOS VALUES (167, 'Reparación de sistema de alimentación', 120);
+INSERT INTO SERVICIOS VALUES (168, 'Cambio de bomba de aceite', 200);
+INSERT INTO SERVICIOS VALUES (169, 'Revisión de sistema de aceite', 70);
+INSERT INTO SERVICIOS VALUES (170, 'Limpieza de filtro de aire', 40);
+INSERT INTO SERVICIOS VALUES (171, 'Reparación de sistema de aceite', 150);
+INSERT INTO SERVICIOS VALUES (172, 'Cambio de correa de turbo', 80);
+INSERT INTO SERVICIOS VALUES (173, 'Revisión de mangueras de aceite', 60);
+INSERT INTO SERVICIOS VALUES (174, 'Limpieza de sistema de aceite', 90);
+INSERT INTO SERVICIOS VALUES (175, 'Reparación de mangueras de aire', 70);
+INSERT INTO SERVICIOS VALUES (176, 'Cambio de intercooler', 180);
+INSERT INTO SERVICIOS VALUES (177, 'Revisión de niveles de aire', 30);
+INSERT INTO SERVICIOS VALUES (178, 'Limpieza de radiador de aceite', 120);
+INSERT INTO SERVICIOS VALUES (179, 'Reparación de sistema de admisión', 100);
+INSERT INTO SERVICIOS VALUES (180, 'Cambio de radiador de aceite', 150);
+INSERT INTO SERVICIOS VALUES (181, 'Revisión de intercooler', 70);
+INSERT INTO SERVICIOS VALUES (182, 'Limpieza de sistema de aire', 60);
+INSERT INTO SERVICIOS VALUES (183, 'Reparación de sistema de frenado', 200);
+INSERT INTO SERVICIOS VALUES (184, 'Cambio de mangueras de frenado', 50);
+INSERT INTO SERVICIOS VALUES (185, 'Revisión de sistema de frenado', 80);
+INSERT INTO SERVICIOS VALUES (186, 'Limpieza de sistema de frenado', 70);
+INSERT INTO SERVICIOS VALUES (187, 'Reparación de bomba de aire', 150);
+INSERT INTO SERVICIOS VALUES (188, 'Cambio de filtros de frenado', 40);
+INSERT INTO SERVICIOS VALUES (189, 'Revisión de presión de frenado', 60);
+INSERT INTO SERVICIOS VALUES (190, 'Limpieza de compresor de aire', 90);
+INSERT INTO SERVICIOS VALUES (191, 'Reparación de sistema de frenado ABS', 250);
+INSERT INTO SERVICIOS VALUES (192, 'Cambio de sensores de frenado', 60);
+INSERT INTO SERVICIOS VALUES (193, 'Revisión de sistema de frenos', 70);
+INSERT INTO SERVICIOS VALUES (194, 'Limpieza de sistema de dirección', 80);
+INSERT INTO SERVICIOS VALUES (195, 'Reparación de sistema de frenos traseros', 100);
+INSERT INTO SERVICIOS VALUES (196, 'Cambio de filtros de frenos', 30);
+INSERT INTO SERVICIOS VALUES (197, 'Revisión de sistema de frenos delanteros', 60);
+INSERT INTO SERVICIOS VALUES (198, 'Limpieza de frenos delanteros', 70);
+INSERT INTO SERVICIOS VALUES (199, 'Reparación de frenos delanteros', 150);
+INSERT INTO SERVICIOS VALUES (200, 'Cambio de pastillas de freno delanteras', 80);
 
+-- Insertar datos en la tabla: CLIENTES
+INSERT INTO CLIENTES VALUES (1, 'Juan', 'Perez', 'Calle 1', '123456701', 'juan.perez@example.com');
+INSERT INTO CLIENTES VALUES (2, 'Marta', 'Sanchez', 'Calle 2', '123456702', 'marta.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (3, 'Carlos', 'Lopez', 'Calle 3', '123456703', 'carlos.lopez@example.com');
+INSERT INTO CLIENTES VALUES (4, 'Ana', 'Gonzalez', 'Calle 4', '123456704', 'ana.gonzalez@example.com');
+INSERT INTO CLIENTES VALUES (5, 'Luis', 'Martinez', 'Calle 5', '123456705', 'luis.martinez@example.com');
+INSERT INTO CLIENTES VALUES (6, 'Lucia', 'Rodriguez', 'Calle 6', '123456706', 'lucia.rodriguez@example.com');
+INSERT INTO CLIENTES VALUES (7, 'Miguel', 'Fernandez', 'Calle 7', '123456707', 'miguel.fernandez@example.com');
+INSERT INTO CLIENTES VALUES (8, 'Laura', 'Garcia', 'Calle 8', '123456708', 'laura.garcia@example.com');
+INSERT INTO CLIENTES VALUES (9, 'Pedro', 'Diaz', 'Calle 9', '123456709', 'pedro.diaz@example.com');
+INSERT INTO CLIENTES VALUES (10, 'Sofia', 'Hernandez', 'Calle 10', '123456710', 'sofia.hernandez@example.com');
+INSERT INTO CLIENTES VALUES (11, 'Raul', 'Mendez', 'Calle 11', '123456711', 'raul.mendez@example.com');
+INSERT INTO CLIENTES VALUES (12, 'Natalia', 'Blanco', 'Calle 12', '123456712', 'natalia.blanco@example.com');
+INSERT INTO CLIENTES VALUES (13, 'Oscar', 'Villalobos', 'Calle 13', '123456713', 'oscar.villalobos@example.com');
+INSERT INTO CLIENTES VALUES (14, 'Sofia', 'Martinez', 'Calle 14', '123456714', 'sofia.martinez@example.com');
+INSERT INTO CLIENTES VALUES (15, 'Javier', 'Herrera', 'Calle 15', '123456715', 'javier.herrera@example.com');
+INSERT INTO CLIENTES VALUES (16, 'Marta', 'Guzman', 'Calle 16', '123456716', 'marta.guzman@example.com');
+INSERT INTO CLIENTES VALUES (17, 'Jose', 'Cordero', 'Calle 17', '123456717', 'jose.cordero@example.com');
+INSERT INTO CLIENTES VALUES (18, 'Alejandra', 'Vega', 'Calle 18', '123456718', 'alejandra.vega@example.com');
+INSERT INTO CLIENTES VALUES (19, 'Eduardo', 'Sanchez', 'Calle 19', '123456719', 'eduardo.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (20, 'Diana', 'Ortiz', 'Calle 20', '123456720', 'diana.ortiz@example.com');
+INSERT INTO CLIENTES VALUES (21, 'Carlos', 'Ramirez', 'Calle 21', '123456721', 'carlos.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (22, 'Andrea', 'Soto', 'Calle 22', '123456722', 'andrea.soto@example.com');
+INSERT INTO CLIENTES VALUES (23, 'Hector', 'Lopez', 'Calle 23', '123456723', 'hector.lopez@example.com');
+INSERT INTO CLIENTES VALUES (24, 'Paola', 'Aguilar', 'Calle 24', '123456724', 'paola.aguilar@example.com');
+INSERT INTO CLIENTES VALUES (25, 'Roberto', 'Molina', 'Calle 25', '123456725', 'roberto.molina@example.com');
+INSERT INTO CLIENTES VALUES (26, 'Maria', 'Lopez', 'Calle 26', '123456726', 'maria.lopez@example.com');
+INSERT INTO CLIENTES VALUES (27, 'Miguel', 'Vargas', 'Calle 27', '123456727', 'miguel.vargas@example.com');
+INSERT INTO CLIENTES VALUES (28, 'Lucia', 'Fernandez', 'Calle 28', '123456728', 'lucia.fernandez@example.com');
+INSERT INTO CLIENTES VALUES (29, 'Diego', 'Serrano', 'Calle 29', '123456729', 'diego.serrano@example.com');
+INSERT INTO CLIENTES VALUES (30, 'Patricia', 'Mendoza', 'Calle 30', '123456730', 'patricia.mendoza@example.com');
+INSERT INTO CLIENTES VALUES (31, 'Jorge', 'Garcia', 'Calle 31', '123456731', 'jorge.garcia@example.com');
+INSERT INTO CLIENTES VALUES (32, 'Gloria', 'Ramos', 'Calle 32', '123456732', 'gloria.ramos@example.com');
+INSERT INTO CLIENTES VALUES (33, 'Rafael', 'Espinoza', 'Calle 33', '123456733', 'rafael.espinoza@example.com');
+INSERT INTO CLIENTES VALUES (34, 'Isabel', 'Vargas', 'Calle 34', '123456734', 'isabel.vargas@example.com');
+INSERT INTO CLIENTES VALUES (35, 'Mauricio', 'Castillo', 'Calle 35', '123456735', 'mauricio.castillo@example.com');
+INSERT INTO CLIENTES VALUES (36, 'Raquel', 'Molina', 'Calle 36', '123456736', 'raquel.molina@example.com');
+INSERT INTO CLIENTES VALUES (37, 'Luis', 'Solis', 'Calle 37', '123456737', 'luis.solis@example.com');
+INSERT INTO CLIENTES VALUES (38, 'Mariana', 'Cordero', 'Calle 38', '123456738', 'mariana.cordero@example.com');
+INSERT INTO CLIENTES VALUES (39, 'Jose', 'Castro', 'Calle 39', '123456739', 'jose.castro@example.com');
+INSERT INTO CLIENTES VALUES (40, 'Andrea', 'Sanchez', 'Calle 40', '123456740', 'andrea.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (41, 'Fernando', 'Diaz', 'Calle 41', '123456741', 'fernando.diaz@example.com');
+INSERT INTO CLIENTES VALUES (42, 'Rosa', 'Martinez', 'Calle 42', '123456742', 'rosa.martinez@example.com');
+INSERT INTO CLIENTES VALUES (43, 'Ricardo', 'Reyes', 'Calle 43', '123456743', 'ricardo.reyes@example.com');
+INSERT INTO CLIENTES VALUES (44, 'Carmen', 'Gutierrez', 'Calle 44', '123456744', 'carmen.gutierrez@example.com');
+INSERT INTO CLIENTES VALUES (45, 'Esteban', 'Perez', 'Calle 45', '123456745', 'esteban.perez@example.com');
+INSERT INTO CLIENTES VALUES (46, 'Margarita', 'Suarez', 'Calle 46', '123456746', 'margarita.suarez@example.com');
+INSERT INTO CLIENTES VALUES (47, 'Sergio', 'Pineda', 'Calle 47', '123456747', 'sergio.pineda@example.com');
+INSERT INTO CLIENTES VALUES (48, 'Laura', 'Solis', 'Calle 48', '123456748', 'laura.solis@example.com');
+INSERT INTO CLIENTES VALUES (49, 'David', 'Vargas', 'Calle 49', '123456749', 'david.vargas@example.com');
+INSERT INTO CLIENTES VALUES (50, 'Julia', 'Gomez', 'Calle 50', '123456750', 'julia.gomez@example.com');
+INSERT INTO CLIENTES VALUES (51, 'Francisco', 'Ramirez', 'Calle 51', '123456751', 'francisco.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (52, 'Angela', 'Lopez', 'Calle 52', '123456752', 'angela.lopez@example.com');
+INSERT INTO CLIENTES VALUES (53, 'Roberto', 'Torres', 'Calle 53', '123456753', 'roberto.torres@example.com');
+INSERT INTO CLIENTES VALUES (54, 'Sandra', 'Castro', 'Calle 54', '123456754', 'sandra.castro@example.com');
+INSERT INTO CLIENTES VALUES (55, 'Manuel', 'Navarro', 'Calle 55', '123456755', 'manuel.navarro@example.com');
+INSERT INTO CLIENTES VALUES (56, 'Veronica', 'Ruiz', 'Calle 56', '123456756', 'veronica.ruiz@example.com');
+INSERT INTO CLIENTES VALUES (57, 'Alfredo', 'Gutierrez', 'Calle 57', '123456757', 'alfredo.gutierrez@example.com');
+INSERT INTO CLIENTES VALUES (58, 'Luisa', 'Ortega', 'Calle 58', '123456758', 'luisa.ortega@example.com');
+INSERT INTO CLIENTES VALUES (59, 'Carlos', 'Mendez', 'Calle 59', '123456759', 'carlos.mendez@example.com');
+INSERT INTO CLIENTES VALUES (60, 'Rosario', 'Sanchez', 'Calle 60', '123456760', 'rosario.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (61, 'Jesus', 'Morales', 'Calle 61', '123456761', 'jesus.morales@example.com');
+INSERT INTO CLIENTES VALUES (62, 'Mariana', 'Jimenez', 'Calle 62', '123456762', 'mariana.jimenez@example.com');
+INSERT INTO CLIENTES VALUES (63, 'Juan', 'Alvarez', 'Calle 63', '123456763', 'juan.alvarez@example.com');
+INSERT INTO CLIENTES VALUES (64, 'Elsa', 'Vega', 'Calle 64', '123456764', 'elsa.vega@example.com');
+INSERT INTO CLIENTES VALUES (65, 'Victor', 'Martinez', 'Calle 65', '123456765', 'victor.martinez@example.com');
+INSERT INTO CLIENTES VALUES (66, 'Ana', 'Reyes', 'Calle 66', '123456766', 'ana.reyes@example.com');
+INSERT INTO CLIENTES VALUES (67, 'Hector', 'Gonzalez', 'Calle 67', '123456767', 'hector.gonzalez@example.com');
+INSERT INTO CLIENTES VALUES (68, 'Carla', 'Ramos', 'Calle 68', '123456768', 'carla.ramos@example.com');
+INSERT INTO CLIENTES VALUES (69, 'Rodrigo', 'Solis', 'Calle 69', '123456769', 'rodrigo.solis@example.com');
+INSERT INTO CLIENTES VALUES (70, 'Alejandra', 'Garcia', 'Calle 70', '123456770', 'alejandra.garcia@example.com');
+INSERT INTO CLIENTES VALUES (71, 'Mauricio', 'Blanco', 'Calle 71', '123456771', 'mauricio.blanco@example.com');
+INSERT INTO CLIENTES VALUES (72, 'Flor', 'Pena', 'Calle 72', '123456772', 'flor.pena@example.com');
+INSERT INTO CLIENTES VALUES (73, 'Luis', 'Ortiz', 'Calle 73', '123456773', 'luis.ortiz@example.com');
+INSERT INTO CLIENTES VALUES (74, 'Isabel', 'Castillo', 'Calle 74', '123456774', 'isabel.castillo@example.com');
+INSERT INTO CLIENTES VALUES (75, 'Pedro', 'Zamora', 'Calle 75', '123456775', 'pedro.zamora@example.com');
+INSERT INTO CLIENTES VALUES (76, 'Cecilia', 'Mendez', 'Calle 76', '123456776', 'cecilia.mendez@example.com');
+INSERT INTO CLIENTES VALUES (77, 'Julio', 'Gutierrez', 'Calle 77', '123456777', 'julio.gutierrez@example.com');
+INSERT INTO CLIENTES VALUES (78, 'Angela', 'Perez', 'Calle 78', '123456778', 'angela.perez@example.com');
+INSERT INTO CLIENTES VALUES (79, 'Diego', 'Fernandez', 'Calle 79', '123456779', 'diego.fernandez@example.com');
+INSERT INTO CLIENTES VALUES (80, 'Carolina', 'Ruiz', 'Calle 80', '123456780', 'carolina.ruiz@example.com');
+INSERT INTO CLIENTES VALUES (81, 'Mario', 'Suarez', 'Calle 81', '123456781', 'mario.suarez@example.com');
+INSERT INTO CLIENTES VALUES (82, 'Luz', 'Rodriguez', 'Calle 82', '123456782', 'luz.rodriguez@example.com');
+INSERT INTO CLIENTES VALUES (83, 'Jaime', 'Aguilar', 'Calle 83', '123456783', 'jaime.aguilar@example.com');
+INSERT INTO CLIENTES VALUES (84, 'Gloria', 'Moreno', 'Calle 84', '123456784', 'gloria.moreno@example.com');
+INSERT INTO CLIENTES VALUES (85, 'Federico', 'Alvarez', 'Calle 85', '123456785', 'federico.alvarez@example.com');
+INSERT INTO CLIENTES VALUES (86, 'Marta', 'Ramirez', 'Calle 86', '123456786', 'marta.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (87, 'Felipe', 'Diaz', 'Calle 87', '123456787', 'felipe.diaz@example.com');
+INSERT INTO CLIENTES VALUES (88, 'Susana', 'Lopez', 'Calle 88', '123456788', 'susana.lopez@example.com');
+INSERT INTO CLIENTES VALUES (89, 'Victor', 'Garcia', 'Calle 89', '123456789', 'victor.garcia@example.com');
+INSERT INTO CLIENTES VALUES (90, 'Elena', 'Sanchez', 'Calle 90', '123456790', 'elena.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (91, 'Francisco', 'Gomez', 'Calle 91', '123456791', 'francisco.gomez@example.com');
+INSERT INTO CLIENTES VALUES (92, 'Isabel', 'Rodriguez', 'Calle 92', '123456792', 'isabel.rodriguez@example.com');
+INSERT INTO CLIENTES VALUES (93, 'Alfredo', 'Vega', 'Calle 93', '123456793', 'alfredo.vega@example.com');
+INSERT INTO CLIENTES VALUES (94, 'Diana', 'Martinez', 'Calle 94', '123456794', 'diana.martinez@example.com');
+INSERT INTO CLIENTES VALUES (95, 'Gabriel', 'Sanchez', 'Calle 95', '123456795', 'gabriel.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (96, 'Luisa', 'Perez', 'Calle 96', '123456796', 'luisa.perez@example.com');
+INSERT INTO CLIENTES VALUES (97, 'Miguel', 'Gutierrez', 'Calle 97', '123456797', 'miguel.gutierrez@example.com');
+INSERT INTO CLIENTES VALUES (98, 'Esteban', 'Lopez', 'Calle 98', '123456798', 'esteban.lopez@example.com');
+INSERT INTO CLIENTES VALUES (99, 'Carmen', 'Ramirez', 'Calle 99', '123456799', 'carmen.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (100, 'Julieta', 'Diaz', 'Calle 100', '123456800', 'julieta.diaz@example.com');
+INSERT INTO CLIENTES VALUES (101, 'Manuel', 'Vasquez', 'Calle 101', '123456801', 'manuel.vasquez@example.com');
+INSERT INTO CLIENTES VALUES (102, 'Sandra', 'Lopez', 'Calle 102', '123456802', 'sandra.lopez@example.com');
+INSERT INTO CLIENTES VALUES (103, 'Ramon', 'Diaz', 'Calle 103', '123456803', 'ramon.diaz@example.com');
+INSERT INTO CLIENTES VALUES (104, 'Patricia', 'Alvarado', 'Calle 104', '123456804', 'patricia.alvarado@example.com');
+INSERT INTO CLIENTES VALUES (105, 'Tomas', 'Cruz', 'Calle 105', '123456805', 'tomas.cruz@example.com');
+INSERT INTO CLIENTES VALUES (106, 'Silvia', 'Rojas', 'Calle 106', '123456806', 'silvia.rojas@example.com');
+INSERT INTO CLIENTES VALUES (107, 'Raul', 'Jimenez', 'Calle 107', '123456807', 'raul.jimenez@example.com');
+INSERT INTO CLIENTES VALUES (108, 'Lucia', 'Garcia', 'Calle 108', '123456808', 'lucia.garcia@example.com');
+INSERT INTO CLIENTES VALUES (109, 'Hector', 'Fernandez', 'Calle 109', '123456809', 'hector.fernandez@example.com');
+INSERT INTO CLIENTES VALUES (110, 'Carmen', 'Sanchez', 'Calle 110', '123456810', 'carmen.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (111, 'Carlos', 'Ramirez', 'Calle 111', '123456811', 'carlos.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (112, 'Maria', 'Perez', 'Calle 112', '123456812', 'maria.perez@example.com');
+INSERT INTO CLIENTES VALUES (113, 'Jose', 'Martinez', 'Calle 113', '123456813', 'jose.martinez@example.com');
+INSERT INTO CLIENTES VALUES (114, 'Juana', 'Lopez', 'Calle 114', '123456814', 'juana.lopez@example.com');
+INSERT INTO CLIENTES VALUES (115, 'Luis', 'Vargas', 'Calle 115', '123456815', 'luis.vargas@example.com');
+INSERT INTO CLIENTES VALUES (116, 'Sofia', 'Gonzalez', 'Calle 116', '123456816', 'sofia.gonzalez@example.com');
+INSERT INTO CLIENTES VALUES (117, 'Felipe', 'Mendoza', 'Calle 117', '123456817', 'felipe.mendoza@example.com');
+INSERT INTO CLIENTES VALUES (118, 'Andrea', 'Alvarez', 'Calle 118', '123456818', 'andrea.alvarez@example.com');
+INSERT INTO CLIENTES VALUES (119, 'Mario', 'Hernandez', 'Calle 119', '123456819', 'mario.hernandez@example.com');
+INSERT INTO CLIENTES VALUES (120, 'Sara', 'Cordero', 'Calle 120', '123456820', 'sara.cordero@example.com');
+INSERT INTO CLIENTES VALUES (121, 'Jorge', 'Castro', 'Calle 121', '123456821', 'jorge.castro@example.com');
+INSERT INTO CLIENTES VALUES (122, 'Rosa', 'Reyes', 'Calle 122', '123456822', 'rosa.reyes@example.com');
+INSERT INTO CLIENTES VALUES (123, 'Oscar', 'Ortega', 'Calle 123', '123456823', 'oscar.ortega@example.com');
+INSERT INTO CLIENTES VALUES (124, 'Gloria', 'Navarro', 'Calle 124', '123456824', 'gloria.navarro@example.com');
+INSERT INTO CLIENTES VALUES (125, 'Pablo', 'Guzman', 'Calle 125', '123456825', 'pablo.guzman@example.com');
+INSERT INTO CLIENTES VALUES (126, 'Daniela', 'Ramos', 'Calle 126', '123456826', 'daniela.ramos@example.com');
+INSERT INTO CLIENTES VALUES (127, 'Arturo', 'Lopez', 'Calle 127', '123456827', 'arturo.lopez@example.com');
+INSERT INTO CLIENTES VALUES (128, 'Luciana', 'Cruz', 'Calle 128', '123456828', 'luciana.cruz@example.com');
+INSERT INTO CLIENTES VALUES (129, 'Esteban', 'Perez', 'Calle 129', '123456829', 'esteban.perez@example.com');
+INSERT INTO CLIENTES VALUES (130, 'Marcela', 'Gomez', 'Calle 130', '123456830', 'marcela.gomez@example.com');
+INSERT INTO CLIENTES VALUES (131, 'Pedro', 'Ramirez', 'Calle 131', '123456831', 'pedro.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (132, 'Angela', 'Morales', 'Calle 132', '123456832', 'angela.morales@example.com');
+INSERT INTO CLIENTES VALUES (133, 'Roberto', 'Diaz', 'Calle 133', '123456833', 'roberto.diaz@example.com');
+INSERT INTO CLIENTES VALUES (134, 'Claudia', 'Jimenez', 'Calle 134', '123456834', 'claudia.jimenez@example.com');
+INSERT INTO CLIENTES VALUES (135, 'Ricardo', 'Rojas', 'Calle 135', '123456835', 'ricardo.rojas@example.com');
+INSERT INTO CLIENTES VALUES (136, 'Martha', 'Sanchez', 'Calle 136', '123456836', 'martha.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (137, 'Sergio', 'Fernandez', 'Calle 137', '123456837', 'sergio.fernandez@example.com');
+INSERT INTO CLIENTES VALUES (138, 'Natalia', 'Lopez', 'Calle 138', '123456838', 'natalia.lopez@example.com');
+INSERT INTO CLIENTES VALUES (139, 'Victor', 'Garcia', 'Calle 139', '123456839', 'victor.garcia@example.com');
+INSERT INTO CLIENTES VALUES (140, 'Patricia', 'Martinez', 'Calle 140', '123456840', 'patricia.martinez@example.com');
+INSERT INTO CLIENTES VALUES (141, 'Julio', 'Hernandez', 'Calle 141', '123456841', 'julio.hernandez@example.com');
+INSERT INTO CLIENTES VALUES (142, 'Gabriela', 'Diaz', 'Calle 142', '123456842', 'gabriela.diaz@example.com');
+INSERT INTO CLIENTES VALUES (143, 'Raul', 'Solis', 'Calle 143', '123456843', 'raul.solis@example.com');
+INSERT INTO CLIENTES VALUES (144, 'Laura', 'Gonzalez', 'Calle 144', '123456844', 'laura.gonzalez@example.com');
+INSERT INTO CLIENTES VALUES (145, 'Carlos', 'Ramirez', 'Calle 145', '123456845', 'carlos.ramirez2@example.com');
+INSERT INTO CLIENTES VALUES (146, 'Monica', 'Jimenez', 'Calle 146', '123456846', 'monica.jimenez@example.com');
+INSERT INTO CLIENTES VALUES (147, 'Andres', 'Vargas', 'Calle 147', '123456847', 'andres.vargas@example.com');
+INSERT INTO CLIENTES VALUES (148, 'Veronica', 'Perez', 'Calle 148', '123456848', 'veronica.perez@example.com');
+INSERT INTO CLIENTES VALUES (149, 'Diego', 'Ramos', 'Calle 149', '123456849', 'diego.ramos@example.com');
+INSERT INTO CLIENTES VALUES (150, 'Lorena', 'Garcia', 'Calle 150', '123456850', 'lorena.garcia@example.com');
+INSERT INTO CLIENTES VALUES (151, 'David', 'Sanchez', 'Calle 151', '123456851', 'david.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (152, 'Ana', 'Fernandez', 'Calle 152', '123456852', 'ana.fernandez@example.com');
+INSERT INTO CLIENTES VALUES (153, 'Guillermo', 'Lopez', 'Calle 153', '123456853', 'guillermo.lopez@example.com');
+INSERT INTO CLIENTES VALUES (154, 'Maria', 'Castro', 'Calle 154', '123456854', 'maria.castro@example.com');
+INSERT INTO CLIENTES VALUES (155, 'Luis', 'Mora', 'Calle 155', '123456855', 'luis.mora@example.com');
+INSERT INTO CLIENTES VALUES (156, 'Adriana', 'Rojas', 'Calle 156', '123456856', 'adriana.rojas@example.com');
+INSERT INTO CLIENTES VALUES (157, 'Rafael', 'Diaz', 'Calle 157', '123456857', 'rafael.diaz@example.com');
+INSERT INTO CLIENTES VALUES (158, 'Carolina', 'Solis', 'Calle 158', '123456858', 'carolina.solis@example.com');
+INSERT INTO CLIENTES VALUES (159, 'Juan', 'Ramirez', 'Calle 159', '123456859', 'juan.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (160, 'Alejandro', 'Gomez', 'Calle 160', '123456860', 'alejandro.gomez@example.com');
+INSERT INTO CLIENTES VALUES (161, 'Luis', 'Cordero', 'Calle 161', '123456861', 'luis.cordero@example.com');
+INSERT INTO CLIENTES VALUES (162, 'Claudia', 'Sanchez', 'Calle 162', '123456862', 'claudia.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (163, 'Rosa', 'Vargas', 'Calle 163', '123456863', 'rosa.vargas@example.com');
+INSERT INTO CLIENTES VALUES (164, 'Miguel', 'Perez', 'Calle 164', '123456864', 'miguel.perez@example.com');
+INSERT INTO CLIENTES VALUES (165, 'Gabriela', 'Ramirez', 'Calle 165', '123456865', 'gabriela.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (166, 'Manuel', 'Lopez', 'Calle 166', '123456866', 'manuel.lopez@example.com');
+INSERT INTO CLIENTES VALUES (167, 'Patricia', 'Hernandez', 'Calle 167', '123456867', 'patricia.hernandez@example.com');
+INSERT INTO CLIENTES VALUES (168, 'Ricardo', 'Gonzalez', 'Calle 168', '123456868', 'ricardo.gonzalez@example.com');
+INSERT INTO CLIENTES VALUES (169, 'Lorena', 'Diaz', 'Calle 169', '123456869', 'lorena.diaz@example.com');
+INSERT INTO CLIENTES VALUES (170, 'Mario', 'Vargas', 'Calle 170', '123456870', 'mario.vargas@example.com');
+INSERT INTO CLIENTES VALUES (171, 'Ana', 'Solis', 'Calle 171', '123456871', 'ana.solis@example.com');
+INSERT INTO CLIENTES VALUES (172, 'Roberto', 'Martinez', 'Calle 172', '123456872', 'roberto.martinez@example.com');
+INSERT INTO CLIENTES VALUES (173, 'Paola', 'Rojas', 'Calle 173', '123456873', 'paola.rojas@example.com');
+INSERT INTO CLIENTES VALUES (174, 'Carlos', 'Gomez', 'Calle 174', '123456874', 'carlos.gomez@example.com');
+INSERT INTO CLIENTES VALUES (175, 'Isabel', 'Ramirez', 'Calle 175', '123456875', 'isabel.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (176, 'Victor', 'Lopez', 'Calle 176', '123456876', 'victor.lopez@example.com');
+INSERT INTO CLIENTES VALUES (177, 'Juana', 'Diaz', 'Calle 177', '123456877', 'juana.diaz@example.com');
+INSERT INTO CLIENTES VALUES (178, 'Felipe', 'Ramirez', 'Calle 178', '123456878', 'felipe.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (179, 'Gloria', 'Vargas', 'Calle 179', '123456879', 'gloria.vargas@example.com');
+INSERT INTO CLIENTES VALUES (180, 'Diego', 'Cordero', 'Calle 180', '123456880', 'diego.cordero@example.com');
+INSERT INTO CLIENTES VALUES (181, 'Patricia', 'Rojas', 'Calle 181', '123456881', 'patricia.rojas@example.com');
+INSERT INTO CLIENTES VALUES (182, 'Ramon', 'Ramirez', 'Calle 182', '123456882', 'ramon.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (183, 'Lorena', 'Garcia', 'Calle 183', '123456883', 'lorena.garcia@example.com');
+INSERT INTO CLIENTES VALUES (184, 'Francisco', 'Perez', 'Calle 184', '123456884', 'francisco.perez@example.com');
+INSERT INTO CLIENTES VALUES (185, 'Luis', 'Diaz', 'Calle 185', '123456885', 'luis.diaz@example.com');
+INSERT INTO CLIENTES VALUES (186, 'Ana', 'Sanchez', 'Calle 186', '123456886', 'ana.sanchez@example.com');
+INSERT INTO CLIENTES VALUES (187, 'Oscar', 'Ramirez', 'Calle 187', '123456887', 'oscar.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (188, 'Gabriela', 'Gomez', 'Calle 188', '123456888', 'gabriela.gomez@example.com');
+INSERT INTO CLIENTES VALUES (189, 'Ricardo', 'Lopez', 'Calle 189', '123456889', 'ricardo.lopez@example.com');
+INSERT INTO CLIENTES VALUES (190, 'Laura', 'Ramirez', 'Calle 190', '123456890', 'laura.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (191, 'Juan', 'Gonzalez', 'Calle 191', '123456891', 'juan.gonzalez@example.com');
+INSERT INTO CLIENTES VALUES (192, 'Sara', 'Vargas', 'Calle 192', '123456892', 'sara.vargas@example.com');
+INSERT INTO CLIENTES VALUES (193, 'Jose', 'Perez', 'Calle 193', '123456893', 'jose.perez@example.com');
+INSERT INTO CLIENTES VALUES (194, 'Marta', 'Hernandez', 'Calle 194', '123456894', 'marta.hernandez@example.com');
+INSERT INTO CLIENTES VALUES (195, 'Luis', 'Lopez', 'Calle 195', '123456895', 'luis.lopez@example.com');
+INSERT INTO CLIENTES VALUES (196, 'Ana', 'Martinez', 'Calle 196', '123456896', 'ana.martinez@example.com');
+INSERT INTO CLIENTES VALUES (197, 'Pedro', 'Ramirez', 'Calle 197', '123456897', 'pedro.ramirez@example.com');
+INSERT INTO CLIENTES VALUES (198, 'Lucia', 'Diaz', 'Calle 198', '123456898', 'lucia.diaz@example.com');
+INSERT INTO CLIENTES VALUES (199, 'Felipe', 'Vargas', 'Calle 199', '123456899', 'felipe.vargas@example.com');
+INSERT INTO CLIENTES VALUES (200, 'Sofia', 'Solis', 'Calle 200', '123456900', 'sofia.solis@example.com');
 
 -- Insertar datos en la tabla: EMPLEADOS
 INSERT INTO EMPLEADOS VALUES (1, 1, 'Carlos', 'Gomez', 45, 'carlos.gomez@example.com', '123456789', TO_DATE('2010-01-15', 'YYYY-MM-DD'), 'Activo');
@@ -566,627 +1012,17 @@ INSERT INTO EMPLEADOS VALUES (200, 10, 'Sofia', 'Jimenez', 33, 'sofia.jimenez@ex
 
 
 
--- Insertar datos en la tabla: CLIENTES
-INSERT INTO CLIENTES VALUES (1, 'Juan', 'Perez', 'Calle 1', '123456701', 'juan.perez@example.com');
-INSERT INTO CLIENTES VALUES (2, 'Marta', 'Sanchez', 'Calle 2', '123456702', 'marta.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (3, 'Carlos', 'Lopez', 'Calle 3', '123456703', 'carlos.lopez@example.com');
-INSERT INTO CLIENTES VALUES (4, 'Ana', 'Gonzalez', 'Calle 4', '123456704', 'ana.gonzalez@example.com');
-INSERT INTO CLIENTES VALUES (5, 'Luis', 'Martinez', 'Calle 5', '123456705', 'luis.martinez@example.com');
-INSERT INTO CLIENTES VALUES (6, 'Lucia', 'Rodriguez', 'Calle 6', '123456706', 'lucia.rodriguez@example.com');
-INSERT INTO CLIENTES VALUES (7, 'Miguel', 'Fernandez', 'Calle 7', '123456707', 'miguel.fernandez@example.com');
-INSERT INTO CLIENTES VALUES (8, 'Laura', 'Garcia', 'Calle 8', '123456708', 'laura.garcia@example.com');
-INSERT INTO CLIENTES VALUES (9, 'Pedro', 'Diaz', 'Calle 9', '123456709', 'pedro.diaz@example.com');
-INSERT INTO CLIENTES VALUES (10, 'Sofia', 'Hernandez', 'Calle 10', '123456710', 'sofia.hernandez@example.com');
-INSERT INTO CLIENTES VALUES (11, 'Raul', 'Mendez', 'Calle 11', '123456711', 'raul.mendez@example.com');
-INSERT INTO CLIENTES VALUES (12, 'Natalia', 'Blanco', 'Calle 12', '123456712', 'natalia.blanco@example.com');
-INSERT INTO CLIENTES VALUES (13, 'Oscar', 'Villalobos', 'Calle 13', '123456713', 'oscar.villalobos@example.com');
-INSERT INTO CLIENTES VALUES (14, 'Sofia', 'Martinez', 'Calle 14', '123456714', 'sofia.martinez@example.com');
-INSERT INTO CLIENTES VALUES (15, 'Javier', 'Herrera', 'Calle 15', '123456715', 'javier.herrera@example.com');
-INSERT INTO CLIENTES VALUES (16, 'Marta', 'Guzman', 'Calle 16', '123456716', 'marta.guzman@example.com');
-INSERT INTO CLIENTES VALUES (17, 'Jose', 'Cordero', 'Calle 17', '123456717', 'jose.cordero@example.com');
-INSERT INTO CLIENTES VALUES (18, 'Alejandra', 'Vega', 'Calle 18', '123456718', 'alejandra.vega@example.com');
-INSERT INTO CLIENTES VALUES (19, 'Eduardo', 'Sanchez', 'Calle 19', '123456719', 'eduardo.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (20, 'Diana', 'Ortiz', 'Calle 20', '123456720', 'diana.ortiz@example.com');
-INSERT INTO CLIENTES VALUES (21, 'Carlos', 'Ramirez', 'Calle 21', '123456721', 'carlos.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (22, 'Andrea', 'Soto', 'Calle 22', '123456722', 'andrea.soto@example.com');
-INSERT INTO CLIENTES VALUES (23, 'Hector', 'Lopez', 'Calle 23', '123456723', 'hector.lopez@example.com');
-INSERT INTO CLIENTES VALUES (24, 'Paola', 'Aguilar', 'Calle 24', '123456724', 'paola.aguilar@example.com');
-INSERT INTO CLIENTES VALUES (25, 'Roberto', 'Molina', 'Calle 25', '123456725', 'roberto.molina@example.com');
-INSERT INTO CLIENTES VALUES (26, 'Maria', 'Lopez', 'Calle 26', '123456726', 'maria.lopez@example.com');
-INSERT INTO CLIENTES VALUES (27, 'Miguel', 'Vargas', 'Calle 27', '123456727', 'miguel.vargas@example.com');
-INSERT INTO CLIENTES VALUES (28, 'Lucia', 'Fernandez', 'Calle 28', '123456728', 'lucia.fernandez@example.com');
-INSERT INTO CLIENTES VALUES (29, 'Diego', 'Serrano', 'Calle 29', '123456729', 'diego.serrano@example.com');
-INSERT INTO CLIENTES VALUES (30, 'Patricia', 'Mendoza', 'Calle 30', '123456730', 'patricia.mendoza@example.com');
-INSERT INTO CLIENTES VALUES (31, 'Jorge', 'Garcia', 'Calle 31', '123456731', 'jorge.garcia@example.com');
-INSERT INTO CLIENTES VALUES (32, 'Gloria', 'Ramos', 'Calle 32', '123456732', 'gloria.ramos@example.com');
-INSERT INTO CLIENTES VALUES (33, 'Rafael', 'Espinoza', 'Calle 33', '123456733', 'rafael.espinoza@example.com');
-INSERT INTO CLIENTES VALUES (34, 'Isabel', 'Vargas', 'Calle 34', '123456734', 'isabel.vargas@example.com');
-INSERT INTO CLIENTES VALUES (35, 'Mauricio', 'Castillo', 'Calle 35', '123456735', 'mauricio.castillo@example.com');
-INSERT INTO CLIENTES VALUES (36, 'Raquel', 'Molina', 'Calle 36', '123456736', 'raquel.molina@example.com');
-INSERT INTO CLIENTES VALUES (37, 'Luis', 'Solis', 'Calle 37', '123456737', 'luis.solis@example.com');
-INSERT INTO CLIENTES VALUES (38, 'Mariana', 'Cordero', 'Calle 38', '123456738', 'mariana.cordero@example.com');
-INSERT INTO CLIENTES VALUES (39, 'Jose', 'Castro', 'Calle 39', '123456739', 'jose.castro@example.com');
-INSERT INTO CLIENTES VALUES (40, 'Andrea', 'Sanchez', 'Calle 40', '123456740', 'andrea.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (41, 'Fernando', 'Diaz', 'Calle 41', '123456741', 'fernando.diaz@example.com');
-INSERT INTO CLIENTES VALUES (42, 'Rosa', 'Martinez', 'Calle 42', '123456742', 'rosa.martinez@example.com');
-INSERT INTO CLIENTES VALUES (43, 'Ricardo', 'Reyes', 'Calle 43', '123456743', 'ricardo.reyes@example.com');
-INSERT INTO CLIENTES VALUES (44, 'Carmen', 'Gutierrez', 'Calle 44', '123456744', 'carmen.gutierrez@example.com');
-INSERT INTO CLIENTES VALUES (45, 'Esteban', 'Perez', 'Calle 45', '123456745', 'esteban.perez@example.com');
-INSERT INTO CLIENTES VALUES (46, 'Margarita', 'Suarez', 'Calle 46', '123456746', 'margarita.suarez@example.com');
-INSERT INTO CLIENTES VALUES (47, 'Sergio', 'Pineda', 'Calle 47', '123456747', 'sergio.pineda@example.com');
-INSERT INTO CLIENTES VALUES (48, 'Laura', 'Solis', 'Calle 48', '123456748', 'laura.solis@example.com');
-INSERT INTO CLIENTES VALUES (49, 'David', 'Vargas', 'Calle 49', '123456749', 'david.vargas@example.com');
-INSERT INTO CLIENTES VALUES (50, 'Julia', 'Gomez', 'Calle 50', '123456750', 'julia.gomez@example.com');
-INSERT INTO CLIENTES VALUES (51, 'Francisco', 'Ramirez', 'Calle 51', '123456751', 'francisco.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (52, 'Angela', 'Lopez', 'Calle 52', '123456752', 'angela.lopez@example.com');
-INSERT INTO CLIENTES VALUES (53, 'Roberto', 'Torres', 'Calle 53', '123456753', 'roberto.torres@example.com');
-INSERT INTO CLIENTES VALUES (54, 'Sandra', 'Castro', 'Calle 54', '123456754', 'sandra.castro@example.com');
-INSERT INTO CLIENTES VALUES (55, 'Manuel', 'Navarro', 'Calle 55', '123456755', 'manuel.navarro@example.com');
-INSERT INTO CLIENTES VALUES (56, 'Veronica', 'Ruiz', 'Calle 56', '123456756', 'veronica.ruiz@example.com');
-INSERT INTO CLIENTES VALUES (57, 'Alfredo', 'Gutierrez', 'Calle 57', '123456757', 'alfredo.gutierrez@example.com');
-INSERT INTO CLIENTES VALUES (58, 'Luisa', 'Ortega', 'Calle 58', '123456758', 'luisa.ortega@example.com');
-INSERT INTO CLIENTES VALUES (59, 'Carlos', 'Mendez', 'Calle 59', '123456759', 'carlos.mendez@example.com');
-INSERT INTO CLIENTES VALUES (60, 'Rosario', 'Sanchez', 'Calle 60', '123456760', 'rosario.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (61, 'Jesus', 'Morales', 'Calle 61', '123456761', 'jesus.morales@example.com');
-INSERT INTO CLIENTES VALUES (62, 'Mariana', 'Jimenez', 'Calle 62', '123456762', 'mariana.jimenez@example.com');
-INSERT INTO CLIENTES VALUES (63, 'Juan', 'Alvarez', 'Calle 63', '123456763', 'juan.alvarez@example.com');
-INSERT INTO CLIENTES VALUES (64, 'Elsa', 'Vega', 'Calle 64', '123456764', 'elsa.vega@example.com');
-INSERT INTO CLIENTES VALUES (65, 'Victor', 'Martinez', 'Calle 65', '123456765', 'victor.martinez@example.com');
-INSERT INTO CLIENTES VALUES (66, 'Ana', 'Reyes', 'Calle 66', '123456766', 'ana.reyes@example.com');
-INSERT INTO CLIENTES VALUES (67, 'Hector', 'Gonzalez', 'Calle 67', '123456767', 'hector.gonzalez@example.com');
-INSERT INTO CLIENTES VALUES (68, 'Carla', 'Ramos', 'Calle 68', '123456768', 'carla.ramos@example.com');
-INSERT INTO CLIENTES VALUES (69, 'Rodrigo', 'Solis', 'Calle 69', '123456769', 'rodrigo.solis@example.com');
-INSERT INTO CLIENTES VALUES (70, 'Alejandra', 'Garcia', 'Calle 70', '123456770', 'alejandra.garcia@example.com');
-INSERT INTO CLIENTES VALUES (71, 'Mauricio', 'Blanco', 'Calle 71', '123456771', 'mauricio.blanco@example.com');
-INSERT INTO CLIENTES VALUES (72, 'Flor', 'Pena', 'Calle 72', '123456772', 'flor.pena@example.com');
-INSERT INTO CLIENTES VALUES (73, 'Luis', 'Ortiz', 'Calle 73', '123456773', 'luis.ortiz@example.com');
-INSERT INTO CLIENTES VALUES (74, 'Isabel', 'Castillo', 'Calle 74', '123456774', 'isabel.castillo@example.com');
-INSERT INTO CLIENTES VALUES (75, 'Pedro', 'Zamora', 'Calle 75', '123456775', 'pedro.zamora@example.com');
-INSERT INTO CLIENTES VALUES (76, 'Cecilia', 'Mendez', 'Calle 76', '123456776', 'cecilia.mendez@example.com');
-INSERT INTO CLIENTES VALUES (77, 'Julio', 'Gutierrez', 'Calle 77', '123456777', 'julio.gutierrez@example.com');
-INSERT INTO CLIENTES VALUES (78, 'Angela', 'Perez', 'Calle 78', '123456778', 'angela.perez@example.com');
-INSERT INTO CLIENTES VALUES (79, 'Diego', 'Fernandez', 'Calle 79', '123456779', 'diego.fernandez@example.com');
-INSERT INTO CLIENTES VALUES (80, 'Carolina', 'Ruiz', 'Calle 80', '123456780', 'carolina.ruiz@example.com');
-INSERT INTO CLIENTES VALUES (81, 'Mario', 'Suarez', 'Calle 81', '123456781', 'mario.suarez@example.com');
-INSERT INTO CLIENTES VALUES (82, 'Luz', 'Rodriguez', 'Calle 82', '123456782', 'luz.rodriguez@example.com');
-INSERT INTO CLIENTES VALUES (83, 'Jaime', 'Aguilar', 'Calle 83', '123456783', 'jaime.aguilar@example.com');
-INSERT INTO CLIENTES VALUES (84, 'Gloria', 'Moreno', 'Calle 84', '123456784', 'gloria.moreno@example.com');
-INSERT INTO CLIENTES VALUES (85, 'Federico', 'Alvarez', 'Calle 85', '123456785', 'federico.alvarez@example.com');
-INSERT INTO CLIENTES VALUES (86, 'Marta', 'Ramirez', 'Calle 86', '123456786', 'marta.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (87, 'Felipe', 'Diaz', 'Calle 87', '123456787', 'felipe.diaz@example.com');
-INSERT INTO CLIENTES VALUES (88, 'Susana', 'Lopez', 'Calle 88', '123456788', 'susana.lopez@example.com');
-INSERT INTO CLIENTES VALUES (89, 'Victor', 'Garcia', 'Calle 89', '123456789', 'victor.garcia@example.com');
-INSERT INTO CLIENTES VALUES (90, 'Elena', 'Sanchez', 'Calle 90', '123456790', 'elena.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (91, 'Francisco', 'Gomez', 'Calle 91', '123456791', 'francisco.gomez@example.com');
-INSERT INTO CLIENTES VALUES (92, 'Isabel', 'Rodriguez', 'Calle 92', '123456792', 'isabel.rodriguez@example.com');
-INSERT INTO CLIENTES VALUES (93, 'Alfredo', 'Vega', 'Calle 93', '123456793', 'alfredo.vega@example.com');
-INSERT INTO CLIENTES VALUES (94, 'Diana', 'Martinez', 'Calle 94', '123456794', 'diana.martinez@example.com');
-INSERT INTO CLIENTES VALUES (95, 'Gabriel', 'Sanchez', 'Calle 95', '123456795', 'gabriel.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (96, 'Luisa', 'Perez', 'Calle 96', '123456796', 'luisa.perez@example.com');
-INSERT INTO CLIENTES VALUES (97, 'Miguel', 'Gutierrez', 'Calle 97', '123456797', 'miguel.gutierrez@example.com');
-INSERT INTO CLIENTES VALUES (98, 'Esteban', 'Lopez', 'Calle 98', '123456798', 'esteban.lopez@example.com');
-INSERT INTO CLIENTES VALUES (99, 'Carmen', 'Ramirez', 'Calle 99', '123456799', 'carmen.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (100, 'Julieta', 'Diaz', 'Calle 100', '123456800', 'julieta.diaz@example.com');
-INSERT INTO CLIENTES VALUES (101, 'Manuel', 'Vasquez', 'Calle 101', '123456801', 'manuel.vasquez@example.com');
-INSERT INTO CLIENTES VALUES (102, 'Sandra', 'Lopez', 'Calle 102', '123456802', 'sandra.lopez@example.com');
-INSERT INTO CLIENTES VALUES (103, 'Ramon', 'Diaz', 'Calle 103', '123456803', 'ramon.diaz@example.com');
-INSERT INTO CLIENTES VALUES (104, 'Patricia', 'Alvarado', 'Calle 104', '123456804', 'patricia.alvarado@example.com');
-INSERT INTO CLIENTES VALUES (105, 'Tomas', 'Cruz', 'Calle 105', '123456805', 'tomas.cruz@example.com');
-INSERT INTO CLIENTES VALUES (106, 'Silvia', 'Rojas', 'Calle 106', '123456806', 'silvia.rojas@example.com');
-INSERT INTO CLIENTES VALUES (107, 'Raul', 'Jimenez', 'Calle 107', '123456807', 'raul.jimenez@example.com');
-INSERT INTO CLIENTES VALUES (108, 'Lucia', 'Garcia', 'Calle 108', '123456808', 'lucia.garcia@example.com');
-INSERT INTO CLIENTES VALUES (109, 'Hector', 'Fernandez', 'Calle 109', '123456809', 'hector.fernandez@example.com');
-INSERT INTO CLIENTES VALUES (110, 'Carmen', 'Sanchez', 'Calle 110', '123456810', 'carmen.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (111, 'Carlos', 'Ramirez', 'Calle 111', '123456811', 'carlos.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (112, 'Maria', 'Perez', 'Calle 112', '123456812', 'maria.perez@example.com');
-INSERT INTO CLIENTES VALUES (113, 'Jose', 'Martinez', 'Calle 113', '123456813', 'jose.martinez@example.com');
-INSERT INTO CLIENTES VALUES (114, 'Juana', 'Lopez', 'Calle 114', '123456814', 'juana.lopez@example.com');
-INSERT INTO CLIENTES VALUES (115, 'Luis', 'Vargas', 'Calle 115', '123456815', 'luis.vargas@example.com');
-INSERT INTO CLIENTES VALUES (116, 'Sofia', 'Gonzalez', 'Calle 116', '123456816', 'sofia.gonzalez@example.com');
-INSERT INTO CLIENTES VALUES (117, 'Felipe', 'Mendoza', 'Calle 117', '123456817', 'felipe.mendoza@example.com');
-INSERT INTO CLIENTES VALUES (118, 'Andrea', 'Alvarez', 'Calle 118', '123456818', 'andrea.alvarez@example.com');
-INSERT INTO CLIENTES VALUES (119, 'Mario', 'Hernandez', 'Calle 119', '123456819', 'mario.hernandez@example.com');
-INSERT INTO CLIENTES VALUES (120, 'Sara', 'Cordero', 'Calle 120', '123456820', 'sara.cordero@example.com');
-INSERT INTO CLIENTES VALUES (121, 'Jorge', 'Castro', 'Calle 121', '123456821', 'jorge.castro@example.com');
-INSERT INTO CLIENTES VALUES (122, 'Rosa', 'Reyes', 'Calle 122', '123456822', 'rosa.reyes@example.com');
-INSERT INTO CLIENTES VALUES (123, 'Oscar', 'Ortega', 'Calle 123', '123456823', 'oscar.ortega@example.com');
-INSERT INTO CLIENTES VALUES (124, 'Gloria', 'Navarro', 'Calle 124', '123456824', 'gloria.navarro@example.com');
-INSERT INTO CLIENTES VALUES (125, 'Pablo', 'Guzman', 'Calle 125', '123456825', 'pablo.guzman@example.com');
-INSERT INTO CLIENTES VALUES (126, 'Daniela', 'Ramos', 'Calle 126', '123456826', 'daniela.ramos@example.com');
-INSERT INTO CLIENTES VALUES (127, 'Arturo', 'Lopez', 'Calle 127', '123456827', 'arturo.lopez@example.com');
-INSERT INTO CLIENTES VALUES (128, 'Luciana', 'Cruz', 'Calle 128', '123456828', 'luciana.cruz@example.com');
-INSERT INTO CLIENTES VALUES (129, 'Esteban', 'Perez', 'Calle 129', '123456829', 'esteban.perez@example.com');
-INSERT INTO CLIENTES VALUES (130, 'Marcela', 'Gomez', 'Calle 130', '123456830', 'marcela.gomez@example.com');
-INSERT INTO CLIENTES VALUES (131, 'Pedro', 'Ramirez', 'Calle 131', '123456831', 'pedro.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (132, 'Angela', 'Morales', 'Calle 132', '123456832', 'angela.morales@example.com');
-INSERT INTO CLIENTES VALUES (133, 'Roberto', 'Diaz', 'Calle 133', '123456833', 'roberto.diaz@example.com');
-INSERT INTO CLIENTES VALUES (134, 'Claudia', 'Jimenez', 'Calle 134', '123456834', 'claudia.jimenez@example.com');
-INSERT INTO CLIENTES VALUES (135, 'Ricardo', 'Rojas', 'Calle 135', '123456835', 'ricardo.rojas@example.com');
-INSERT INTO CLIENTES VALUES (136, 'Martha', 'Sanchez', 'Calle 136', '123456836', 'martha.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (137, 'Sergio', 'Fernandez', 'Calle 137', '123456837', 'sergio.fernandez@example.com');
-INSERT INTO CLIENTES VALUES (138, 'Natalia', 'Lopez', 'Calle 138', '123456838', 'natalia.lopez@example.com');
-INSERT INTO CLIENTES VALUES (139, 'Victor', 'Garcia', 'Calle 139', '123456839', 'victor.garcia@example.com');
-INSERT INTO CLIENTES VALUES (140, 'Patricia', 'Martinez', 'Calle 140', '123456840', 'patricia.martinez@example.com');
-INSERT INTO CLIENTES VALUES (141, 'Julio', 'Hernandez', 'Calle 141', '123456841', 'julio.hernandez@example.com');
-INSERT INTO CLIENTES VALUES (142, 'Gabriela', 'Diaz', 'Calle 142', '123456842', 'gabriela.diaz@example.com');
-INSERT INTO CLIENTES VALUES (143, 'Raul', 'Solis', 'Calle 143', '123456843', 'raul.solis@example.com');
-INSERT INTO CLIENTES VALUES (144, 'Laura', 'Gonzalez', 'Calle 144', '123456844', 'laura.gonzalez@example.com');
-INSERT INTO CLIENTES VALUES (145, 'Carlos', 'Ramirez', 'Calle 145', '123456845', 'carlos.ramirez2@example.com');
-INSERT INTO CLIENTES VALUES (146, 'Monica', 'Jimenez', 'Calle 146', '123456846', 'monica.jimenez@example.com');
-INSERT INTO CLIENTES VALUES (147, 'Andres', 'Vargas', 'Calle 147', '123456847', 'andres.vargas@example.com');
-INSERT INTO CLIENTES VALUES (148, 'Veronica', 'Perez', 'Calle 148', '123456848', 'veronica.perez@example.com');
-INSERT INTO CLIENTES VALUES (149, 'Diego', 'Ramos', 'Calle 149', '123456849', 'diego.ramos@example.com');
-INSERT INTO CLIENTES VALUES (150, 'Lorena', 'Garcia', 'Calle 150', '123456850', 'lorena.garcia@example.com');
-INSERT INTO CLIENTES VALUES (151, 'David', 'Sanchez', 'Calle 151', '123456851', 'david.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (152, 'Ana', 'Fernandez', 'Calle 152', '123456852', 'ana.fernandez@example.com');
-INSERT INTO CLIENTES VALUES (153, 'Guillermo', 'Lopez', 'Calle 153', '123456853', 'guillermo.lopez@example.com');
-INSERT INTO CLIENTES VALUES (154, 'Maria', 'Castro', 'Calle 154', '123456854', 'maria.castro@example.com');
-INSERT INTO CLIENTES VALUES (155, 'Luis', 'Mora', 'Calle 155', '123456855', 'luis.mora@example.com');
-INSERT INTO CLIENTES VALUES (156, 'Adriana', 'Rojas', 'Calle 156', '123456856', 'adriana.rojas@example.com');
-INSERT INTO CLIENTES VALUES (157, 'Rafael', 'Diaz', 'Calle 157', '123456857', 'rafael.diaz@example.com');
-INSERT INTO CLIENTES VALUES (158, 'Carolina', 'Solis', 'Calle 158', '123456858', 'carolina.solis@example.com');
-INSERT INTO CLIENTES VALUES (159, 'Juan', 'Ramirez', 'Calle 159', '123456859', 'juan.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (160, 'Alejandro', 'Gomez', 'Calle 160', '123456860', 'alejandro.gomez@example.com');
-INSERT INTO CLIENTES VALUES (161, 'Luis', 'Cordero', 'Calle 161', '123456861', 'luis.cordero@example.com');
-INSERT INTO CLIENTES VALUES (162, 'Claudia', 'Sanchez', 'Calle 162', '123456862', 'claudia.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (163, 'Rosa', 'Vargas', 'Calle 163', '123456863', 'rosa.vargas@example.com');
-INSERT INTO CLIENTES VALUES (164, 'Miguel', 'Perez', 'Calle 164', '123456864', 'miguel.perez@example.com');
-INSERT INTO CLIENTES VALUES (165, 'Gabriela', 'Ramirez', 'Calle 165', '123456865', 'gabriela.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (166, 'Manuel', 'Lopez', 'Calle 166', '123456866', 'manuel.lopez@example.com');
-INSERT INTO CLIENTES VALUES (167, 'Patricia', 'Hernandez', 'Calle 167', '123456867', 'patricia.hernandez@example.com');
-INSERT INTO CLIENTES VALUES (168, 'Ricardo', 'Gonzalez', 'Calle 168', '123456868', 'ricardo.gonzalez@example.com');
-INSERT INTO CLIENTES VALUES (169, 'Lorena', 'Diaz', 'Calle 169', '123456869', 'lorena.diaz@example.com');
-INSERT INTO CLIENTES VALUES (170, 'Mario', 'Vargas', 'Calle 170', '123456870', 'mario.vargas@example.com');
-INSERT INTO CLIENTES VALUES (171, 'Ana', 'Solis', 'Calle 171', '123456871', 'ana.solis@example.com');
-INSERT INTO CLIENTES VALUES (172, 'Roberto', 'Martinez', 'Calle 172', '123456872', 'roberto.martinez@example.com');
-INSERT INTO CLIENTES VALUES (173, 'Paola', 'Rojas', 'Calle 173', '123456873', 'paola.rojas@example.com');
-INSERT INTO CLIENTES VALUES (174, 'Carlos', 'Gomez', 'Calle 174', '123456874', 'carlos.gomez@example.com');
-INSERT INTO CLIENTES VALUES (175, 'Isabel', 'Ramirez', 'Calle 175', '123456875', 'isabel.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (176, 'Victor', 'Lopez', 'Calle 176', '123456876', 'victor.lopez@example.com');
-INSERT INTO CLIENTES VALUES (177, 'Juana', 'Diaz', 'Calle 177', '123456877', 'juana.diaz@example.com');
-INSERT INTO CLIENTES VALUES (178, 'Felipe', 'Ramirez', 'Calle 178', '123456878', 'felipe.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (179, 'Gloria', 'Vargas', 'Calle 179', '123456879', 'gloria.vargas@example.com');
-INSERT INTO CLIENTES VALUES (180, 'Diego', 'Cordero', 'Calle 180', '123456880', 'diego.cordero@example.com');
-INSERT INTO CLIENTES VALUES (181, 'Patricia', 'Rojas', 'Calle 181', '123456881', 'patricia.rojas@example.com');
-INSERT INTO CLIENTES VALUES (182, 'Ramon', 'Ramirez', 'Calle 182', '123456882', 'ramon.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (183, 'Lorena', 'Garcia', 'Calle 183', '123456883', 'lorena.garcia@example.com');
-INSERT INTO CLIENTES VALUES (184, 'Francisco', 'Perez', 'Calle 184', '123456884', 'francisco.perez@example.com');
-INSERT INTO CLIENTES VALUES (185, 'Luis', 'Diaz', 'Calle 185', '123456885', 'luis.diaz@example.com');
-INSERT INTO CLIENTES VALUES (186, 'Ana', 'Sanchez', 'Calle 186', '123456886', 'ana.sanchez@example.com');
-INSERT INTO CLIENTES VALUES (187, 'Oscar', 'Ramirez', 'Calle 187', '123456887', 'oscar.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (188, 'Gabriela', 'Gomez', 'Calle 188', '123456888', 'gabriela.gomez@example.com');
-INSERT INTO CLIENTES VALUES (189, 'Ricardo', 'Lopez', 'Calle 189', '123456889', 'ricardo.lopez@example.com');
-INSERT INTO CLIENTES VALUES (190, 'Laura', 'Ramirez', 'Calle 190', '123456890', 'laura.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (191, 'Juan', 'Gonzalez', 'Calle 191', '123456891', 'juan.gonzalez@example.com');
-INSERT INTO CLIENTES VALUES (192, 'Sara', 'Vargas', 'Calle 192', '123456892', 'sara.vargas@example.com');
-INSERT INTO CLIENTES VALUES (193, 'Jose', 'Perez', 'Calle 193', '123456893', 'jose.perez@example.com');
-INSERT INTO CLIENTES VALUES (194, 'Marta', 'Hernandez', 'Calle 194', '123456894', 'marta.hernandez@example.com');
-INSERT INTO CLIENTES VALUES (195, 'Luis', 'Lopez', 'Calle 195', '123456895', 'luis.lopez@example.com');
-INSERT INTO CLIENTES VALUES (196, 'Ana', 'Martinez', 'Calle 196', '123456896', 'ana.martinez@example.com');
-INSERT INTO CLIENTES VALUES (197, 'Pedro', 'Ramirez', 'Calle 197', '123456897', 'pedro.ramirez@example.com');
-INSERT INTO CLIENTES VALUES (198, 'Lucia', 'Diaz', 'Calle 198', '123456898', 'lucia.diaz@example.com');
-INSERT INTO CLIENTES VALUES (199, 'Felipe', 'Vargas', 'Calle 199', '123456899', 'felipe.vargas@example.com');
-INSERT INTO CLIENTES VALUES (200, 'Sofia', 'Solis', 'Calle 200', '123456900', 'sofia.solis@example.com');
-
-
-
--- Insertar datos en la tabla: PROVEEDORES
-INSERT INTO PROVEEDORES VALUES (1, 'Toyota', 'Avenida 123, Ciudad', '123456711', 'contact@toyota.com');
-INSERT INTO PROVEEDORES VALUES (2, 'Ford', 'Calle 456, Ciudad', '123456712', 'contact@ford.com');
-INSERT INTO PROVEEDORES VALUES (3, 'Chevrolet', 'Boulevard 789, Ciudad', '123456713', 'contact@chevrolet.com');
-INSERT INTO PROVEEDORES VALUES (4, 'Honda', 'Avenida Principal, Ciudad', '123456714', 'contact@honda.com');
-INSERT INTO PROVEEDORES VALUES (5, 'Nissan', 'Calle Secundaria, Ciudad', '123456715', 'contact@nissan.com');
-INSERT INTO PROVEEDORES VALUES (6, 'BMW', 'Calle Tercera, Ciudad', '123456716', 'contact@bmw.com');
-INSERT INTO PROVEEDORES VALUES (7, 'Audi', 'Avenida Cuarta, Ciudad', '123456717', 'contact@audi.com');
-INSERT INTO PROVEEDORES VALUES (8, 'Mercedes-Benz', 'Boulevard Quinto, Ciudad', '123456718', 'contact@mercedes-benz.com');
-INSERT INTO PROVEEDORES VALUES (9, 'Hyundai', 'Avenida Sexta, Ciudad', '123456719', 'contact@hyundai.com');
-INSERT INTO PROVEEDORES VALUES (10, 'Volkswagen', 'Calle Séptima, Ciudad', '123456720', 'contact@volkswagen.com');
-INSERT INTO PROVEEDORES VALUES (11, 'Kia', 'Calle 11, Ciudad', '123456721', 'contact@kia.com');
-INSERT INTO PROVEEDORES VALUES (12, 'Mazda', 'Avenida 12, Ciudad', '123456722', 'contact@mazda.com');
-INSERT INTO PROVEEDORES VALUES (13, 'Subaru', 'Boulevard 13, Ciudad', '123456723', 'contact@subaru.com');
-INSERT INTO PROVEEDORES VALUES (14, 'Mitsubishi', 'Calle 14, Ciudad', '123456724', 'contact@mitsubishi.com');
-INSERT INTO PROVEEDORES VALUES (15, 'Suzuki', 'Avenida 15, Ciudad', '123456725', 'contact@suzuki.com');
-INSERT INTO PROVEEDORES VALUES (16, 'Renault', 'Boulevard 16, Ciudad', '123456726', 'contact@renault.com');
-INSERT INTO PROVEEDORES VALUES (17, 'Peugeot', 'Calle 17, Ciudad', '123456727', 'contact@peugeot.com');
-INSERT INTO PROVEEDORES VALUES (18, 'Fiat', 'Avenida 18, Ciudad', '123456728', 'contact@fiat.com');
-INSERT INTO PROVEEDORES VALUES (19, 'Volvo', 'Boulevard 19, Ciudad', '123456729', 'contact@volvo.com');
-INSERT INTO PROVEEDORES VALUES (20, 'Jeep', 'Calle 20, Ciudad', '123456730', 'contact@jeep.com');
-INSERT INTO PROVEEDORES VALUES (21, 'Land Rover', 'Avenida 21, Ciudad', '123456731', 'contact@landrover.com');
-INSERT INTO PROVEEDORES VALUES (22, 'Jaguar', 'Boulevard 22, Ciudad', '123456732', 'contact@jaguar.com');
-INSERT INTO PROVEEDORES VALUES (23, 'Porsche', 'Calle 23, Ciudad', '123456733', 'contact@porsche.com');
-INSERT INTO PROVEEDORES VALUES (24, 'Lexus', 'Avenida 24, Ciudad', '123456734', 'contact@lexus.com');
-INSERT INTO PROVEEDORES VALUES (25, 'Ferrari', 'Boulevard 25, Ciudad', '123456735', 'contact@ferrari.com');
-INSERT INTO PROVEEDORES VALUES (26, 'Lamborghini', 'Calle 26, Ciudad', '123456736', 'contact@lamborghini.com');
-INSERT INTO PROVEEDORES VALUES (27, 'Maserati', 'Avenida 27, Ciudad', '123456737', 'contact@maserati.com');
-INSERT INTO PROVEEDORES VALUES (28, 'Bentley', 'Boulevard 28, Ciudad', '123456738', 'contact@bentley.com');
-INSERT INTO PROVEEDORES VALUES (29, 'Rolls-Royce', 'Calle 29, Ciudad', '123456739', 'contact@rolls-royce.com');
-INSERT INTO PROVEEDORES VALUES (30, 'Aston Martin', 'Avenida 30, Ciudad', '123456740', 'contact@astonmartin.com');
-INSERT INTO PROVEEDORES VALUES (31, 'Alfa Romeo', 'Boulevard 31, Ciudad', '123456741', 'contact@alfaromeo.com');
-INSERT INTO PROVEEDORES VALUES (32, 'Genesis', 'Calle 32, Ciudad', '123456742', 'contact@genesis.com');
-INSERT INTO PROVEEDORES VALUES (33, 'Acura', 'Avenida 33, Ciudad', '123456743', 'contact@acura.com');
-INSERT INTO PROVEEDORES VALUES (34, 'Infiniti', 'Boulevard 34, Ciudad', '123456744', 'contact@infiniti.com');
-INSERT INTO PROVEEDORES VALUES (35, 'Tesla', 'Calle 35, Ciudad', '123456745', 'contact@tesla.com');
-INSERT INTO PROVEEDORES VALUES (36, 'Mini', 'Avenida 36, Ciudad', '123456746', 'contact@mini.com');
-INSERT INTO PROVEEDORES VALUES (37, 'Skoda', 'Boulevard 37, Ciudad', '123456747', 'contact@skoda.com');
-INSERT INTO PROVEEDORES VALUES (38, 'Seat', 'Calle 38, Ciudad', '123456748', 'contact@seat.com');
-INSERT INTO PROVEEDORES VALUES (39, 'Dodge', 'Avenida 39, Ciudad', '123456749', 'contact@dodge.com');
-INSERT INTO PROVEEDORES VALUES (40, 'Chrysler', 'Boulevard 40, Ciudad', '123456750', 'contact@chrysler.com');
-INSERT INTO PROVEEDORES VALUES (41, 'RAM', 'Calle 41, Ciudad', '123456751', 'contact@ram.com');
-INSERT INTO PROVEEDORES VALUES (42, 'GMC', 'Avenida 42, Ciudad', '123456752', 'contact@gmc.com');
-INSERT INTO PROVEEDORES VALUES (43, 'Buick', 'Boulevard 43, Ciudad', '123456753', 'contact@buick.com');
-INSERT INTO PROVEEDORES VALUES (44, 'Cadillac', 'Calle 44, Ciudad', '123456754', 'contact@cadillac.com');
-INSERT INTO PROVEEDORES VALUES (45, 'Lincoln', 'Avenida 45, Ciudad', '123456755', 'contact@lincoln.com');
-INSERT INTO PROVEEDORES VALUES (46, 'Hummer', 'Boulevard 46, Ciudad', '123456756', 'contact@hummer.com');
-INSERT INTO PROVEEDORES VALUES (47, 'Pontiac', 'Calle 47, Ciudad', '123456757', 'contact@pontiac.com');
-INSERT INTO PROVEEDORES VALUES (48, 'Saturn', 'Avenida 48, Ciudad', '123456758', 'contact@saturn.com');
-INSERT INTO PROVEEDORES VALUES (49, 'Saab', 'Boulevard 49, Ciudad', '123456759', 'contact@saab.com');
-INSERT INTO PROVEEDORES VALUES (50, 'Mitsubishi', 'Calle 50, Ciudad', '123456760', 'contact@mitsubishi.com');
-INSERT INTO PROVEEDORES VALUES (51, 'Suzuki', 'Avenida 51, Ciudad', '123456761', 'contact@suzuki.com');
-INSERT INTO PROVEEDORES VALUES (52, 'Isuzu', 'Boulevard 52, Ciudad', '123456762', 'contact@isuzu.com');
-INSERT INTO PROVEEDORES VALUES (53, 'Scion', 'Calle 53, Ciudad', '123456763', 'contact@scion.com');
-INSERT INTO PROVEEDORES VALUES (54, 'Daihatsu', 'Avenida 54, Ciudad', '123456764', 'contact@daihatsu.com');
-INSERT INTO PROVEEDORES VALUES (55, 'Fiat', 'Boulevard 55, Ciudad', '123456765', 'contact@fiat.com');
-INSERT INTO PROVEEDORES VALUES (56, 'Peugeot', 'Calle 56, Ciudad', '123456766', 'contact@peugeot.com');
-INSERT INTO PROVEEDORES VALUES (57, 'Citroën', 'Avenida 57, Ciudad', '123456767', 'contact@citroen.com');
-INSERT INTO PROVEEDORES VALUES (58, 'Renault', 'Boulevard 58, Ciudad', '123456768', 'contact@renault.com');
-INSERT INTO PROVEEDORES VALUES (59, 'Opel', 'Calle 59, Ciudad', '123456769', 'contact@opel.com');
-INSERT INTO PROVEEDORES VALUES (60, 'Vauxhall', 'Avenida 60, Ciudad', '123456770', 'contact@vauxhall.com');
-INSERT INTO PROVEEDORES VALUES (61, 'Holden', 'Boulevard 61, Ciudad', '123456771', 'contact@holden.com');
-INSERT INTO PROVEEDORES VALUES (62, 'Rover', 'Calle 62, Ciudad', '123456772', 'contact@rover.com');
-INSERT INTO PROVEEDORES VALUES (63, 'MG', 'Avenida 63, Ciudad', '123456773', 'contact@mg.com');
-INSERT INTO PROVEEDORES VALUES (64, 'Lotus', 'Boulevard 64, Ciudad', '123456774', 'contact@lotus.com');
-INSERT INTO PROVEEDORES VALUES (65, 'Aston Martin', 'Calle 65, Ciudad', '123456775', 'contact@astonmartin.com');
-INSERT INTO PROVEEDORES VALUES (66, 'Bentley', 'Avenida 66, Ciudad', '123456776', 'contact@bentley.com');
-INSERT INTO PROVEEDORES VALUES (67, 'Rolls-Royce', 'Boulevard 67, Ciudad', '123456777', 'contact@rolls-royce.com');
-INSERT INTO PROVEEDORES VALUES (68, 'Morgan', 'Calle 68, Ciudad', '123456778', 'contact@morgan.com');
-INSERT INTO PROVEEDORES VALUES (69, 'McLaren', 'Avenida 69, Ciudad', '123456779', 'contact@mclaren.com');
-INSERT INTO PROVEEDORES VALUES (70, 'Pagani', 'Boulevard 70, Ciudad', '123456780', 'contact@pagani.com');
-INSERT INTO PROVEEDORES VALUES (71, 'Bugatti', 'Calle 71, Ciudad', '123456781', 'contact@bugatti.com');
-INSERT INTO PROVEEDORES VALUES (72, 'Koenigsegg', 'Avenida 72, Ciudad', '123456782', 'contact@koenigsegg.com');
-INSERT INTO PROVEEDORES VALUES (73, 'Tesla', 'Boulevard 73, Ciudad', '123456783', 'contact@tesla.com');
-INSERT INTO PROVEEDORES VALUES (74, 'Polestar', 'Calle 74, Ciudad', '123456784', 'contact@polestar.com');
-INSERT INTO PROVEEDORES VALUES (75, 'Lucid Motors', 'Avenida 75, Ciudad', '123456785', 'contact@lucidmotors.com');
-INSERT INTO PROVEEDORES VALUES (76, 'Rivian', 'Boulevard 76, Ciudad', '123456786', 'contact@rivian.com');
-INSERT INTO PROVEEDORES VALUES (77, 'Fisker', 'Calle 77, Ciudad', '123456787', 'contact@fisker.com');
-INSERT INTO PROVEEDORES VALUES (78, 'Faraday Future', 'Avenida 78, Ciudad', '123456788', 'contact@faradayfuture.com');
-INSERT INTO PROVEEDORES VALUES (79, 'Byton', 'Boulevard 79, Ciudad', '123456789', 'contact@byton.com');
-INSERT INTO PROVEEDORES VALUES (80, 'Nio', 'Calle 80, Ciudad', '123456790', 'contact@nio.com');
-INSERT INTO PROVEEDORES VALUES (81, 'Xpeng', 'Avenida 81, Ciudad', '123456791', 'contact@xpeng.com');
-INSERT INTO PROVEEDORES VALUES (82, 'Li Auto', 'Boulevard 82, Ciudad', '123456792', 'contact@liauto.com');
-INSERT INTO PROVEEDORES VALUES (83, 'Geely', 'Calle 83, Ciudad', '123456793', 'contact@geely.com');
-INSERT INTO PROVEEDORES VALUES (84, 'Changan', 'Avenida 84, Ciudad', '123456794', 'contact@changan.com');
-INSERT INTO PROVEEDORES VALUES (85, 'Great Wall', 'Boulevard 85, Ciudad', '123456795', 'contact@greatwall.com');
-INSERT INTO PROVEEDORES VALUES (86, 'BYD', 'Calle 86, Ciudad', '123456796', 'contact@byd.com');
-INSERT INTO PROVEEDORES VALUES (87, 'FAW', 'Avenida 87, Ciudad', '123456797', 'contact@faw.com');
-INSERT INTO PROVEEDORES VALUES (88, 'Dongfeng', 'Boulevard 88, Ciudad', '123456798', 'contact@dongfeng.com');
-INSERT INTO PROVEEDORES VALUES (89, 'BAIC', 'Calle 89, Ciudad', '123456799', 'contact@baic.com');
-INSERT INTO PROVEEDORES VALUES (90, 'GAC', 'Avenida 90, Ciudad', '123456800', 'contact@gac.com');
-INSERT INTO PROVEEDORES VALUES (91, 'Haval', 'Boulevard 91, Ciudad', '123456801', 'contact@haval.com');
-INSERT INTO PROVEEDORES VALUES (92, 'Chery', 'Calle 92, Ciudad', '123456802', 'contact@chery.com');
-INSERT INTO PROVEEDORES VALUES (93, 'Zotye', 'Avenida 93, Ciudad', '123456803', 'contact@zotye.com');
-INSERT INTO PROVEEDORES VALUES (94, 'Lifan', 'Boulevard 94, Ciudad', '123456804', 'contact@lifan.com');
-INSERT INTO PROVEEDORES VALUES (95, 'Mahindra', 'Calle 95, Ciudad', '123456805', 'contact@mahindra.com');
-INSERT INTO PROVEEDORES VALUES (96, 'Tata Motors', 'Avenida 96, Ciudad', '123456806', 'contact@tatamotors.com');
-INSERT INTO PROVEEDORES VALUES (97, 'Maruti Suzuki', 'Boulevard 97, Ciudad', '123456807', 'contact@marutisuzuki.com');
-INSERT INTO PROVEEDORES VALUES (98, 'Proton', 'Calle 98, Ciudad', '123456808', 'contact@proton.com');
-INSERT INTO PROVEEDORES VALUES (99, 'Perodua', 'Avenida 99, Ciudad', '123456809', 'contact@perodua.com');
-INSERT INTO PROVEEDORES VALUES (100, 'SsangYong', 'Boulevard 100, Ciudad', '123456810', 'contact@ssangyong.com');
-INSERT INTO PROVEEDORES VALUES (101, 'Saipa', 'Calle 101, Ciudad', '123456811', 'contact@saipa.com');
-INSERT INTO PROVEEDORES VALUES (102, 'Iran Khodro', 'Avenida 102, Ciudad', '123456812', 'contact@irankhodro.com');
-INSERT INTO PROVEEDORES VALUES (103, 'Wuling', 'Boulevard 103, Ciudad', '123456813', 'contact@wuling.com');
-INSERT INTO PROVEEDORES VALUES (104, 'Baojun', 'Calle 104, Ciudad', '123456814', 'contact@baojun.com');
-INSERT INTO PROVEEDORES VALUES (105, 'Roewe', 'Avenida 105, Ciudad', '123456815', 'contact@roewe.com');
-INSERT INTO PROVEEDORES VALUES (106, 'MG', 'Boulevard 106, Ciudad', '123456816', 'contact@mg.com');
-INSERT INTO PROVEEDORES VALUES (107, 'Trumpchi', 'Calle 107, Ciudad', '123456817', 'contact@trumpchi.com');
-INSERT INTO PROVEEDORES VALUES (108, 'Lynk & Co', 'Avenida 108, Ciudad', '123456818', 'contact@lynkco.com');
-INSERT INTO PROVEEDORES VALUES (109, 'Zhejiang Geely Holding Group', 'Boulevard 109, Ciudad', '123456819', 'contact@geelygroup.com');
-INSERT INTO PROVEEDORES VALUES (110, 'Brilliance Auto', 'Calle 110, Ciudad', '123456820', 'contact@brillianceauto.com');
-INSERT INTO PROVEEDORES VALUES (111, 'JAC Motors', 'Avenida 111, Ciudad', '123456821', 'contact@jacmotors.com');
-INSERT INTO PROVEEDORES VALUES (112, 'Haima', 'Boulevard 112, Ciudad', '123456822', 'contact@haima.com');
-INSERT INTO PROVEEDORES VALUES (113, 'Maxus', 'Calle 113, Ciudad', '123456823', 'contact@maxus.com');
-INSERT INTO PROVEEDORES VALUES (114, 'JMC', 'Avenida 114, Ciudad', '123456824', 'contact@jmc.com');
-INSERT INTO PROVEEDORES VALUES (115, 'Dongfeng Motor Corporation', 'Boulevard 115, Ciudad', '123456825', 'contact@dongfeng.com');
-INSERT INTO PROVEEDORES VALUES (116, 'Beijing Automotive Group', 'Calle 116, Ciudad', '123456826', 'contact@beijingauto.com');
-INSERT INTO PROVEEDORES VALUES (117, 'Foton', 'Avenida 117, Ciudad', '123456827', 'contact@foton.com');
-INSERT INTO PROVEEDORES VALUES (118, 'King Long', 'Boulevard 118, Ciudad', '123456828', 'contact@kinglong.com');
-INSERT INTO PROVEEDORES VALUES (119, 'Higer', 'Calle 119, Ciudad', '123456829', 'contact@higer.com');
-INSERT INTO PROVEEDORES VALUES (120, 'Yutong', 'Avenida 120, Ciudad', '123456830', 'contact@yutong.com');
-INSERT INTO PROVEEDORES VALUES (121, 'CNHTC', 'Boulevard 121, Ciudad', '123456831', 'contact@cnhtc.com');
-INSERT INTO PROVEEDORES VALUES (122, 'SAIC Motor', 'Calle 122, Ciudad', '123456832', 'contact@saicmotor.com');
-INSERT INTO PROVEEDORES VALUES (123, 'Chery', 'Avenida 123, Ciudad', '123456833', 'contact@chery.com');
-INSERT INTO PROVEEDORES VALUES (124, 'Great Wall Motors', 'Boulevard 124, Ciudad', '123456834', 'contact@greatwallmotors.com');
-INSERT INTO PROVEEDORES VALUES (125, 'BYD Auto', 'Calle 125, Ciudad', '123456835', 'contact@bydauto.com');
-INSERT INTO PROVEEDORES VALUES (126, 'FAW Group', 'Avenida 126, Ciudad', '123456836', 'contact@fawgroup.com');
-INSERT INTO PROVEEDORES VALUES (127, 'Geely Auto', 'Boulevard 127, Ciudad', '123456837', 'contact@geelyauto.com');
-INSERT INTO PROVEEDORES VALUES (128, 'Dongfeng Liuzhou Motor', 'Calle 128, Ciudad', '123456838', 'contact@dfmotor.com');
-INSERT INTO PROVEEDORES VALUES (129, 'Zotye Auto', 'Avenida 129, Ciudad', '123456839', 'contact@zotyeauto.com');
-INSERT INTO PROVEEDORES VALUES (130, 'Hawtai Motor', 'Boulevard 130, Ciudad', '123456840', 'contact@hawtai.com');
-INSERT INTO PROVEEDORES VALUES (131, 'BAIC Group', 'Calle 131, Ciudad', '123456841', 'contact@baicgroup.com');
-INSERT INTO PROVEEDORES VALUES (132, 'Brilliance Auto', 'Avenida 132, Ciudad', '123456842', 'contact@brillianceauto.com');
-INSERT INTO PROVEEDORES VALUES (133, 'Changfeng Motor', 'Boulevard 133, Ciudad', '123456843', 'contact@changfengmotor.com');
-INSERT INTO PROVEEDORES VALUES (134, 'JAC Motors', 'Calle 134, Ciudad', '123456844', 'contact@jacmotors.com');
-INSERT INTO PROVEEDORES VALUES (135, 'GAC Group', 'Avenida 135, Ciudad', '123456845', 'contact@gacgroup.com');
-INSERT INTO PROVEEDORES VALUES (136, 'Hongqi', 'Boulevard 136, Ciudad', '123456846', 'contact@hongqi.com');
-INSERT INTO PROVEEDORES VALUES (137, 'Soueast Motors', 'Calle 137, Ciudad', '123456847', 'contact@soueastmotors.com');
-INSERT INTO PROVEEDORES VALUES (138, 'JMCG', 'Avenida 138, Ciudad', '123456848', 'contact@jmcg.com');
-INSERT INTO PROVEEDORES VALUES (139, 'Haima Automobile', 'Boulevard 139, Ciudad', '123456849', 'contact@haimaauto.com');
-INSERT INTO PROVEEDORES VALUES (140, 'Jinbei', 'Calle 140, Ciudad', '123456850', 'contact@jinbei.com');
-INSERT INTO PROVEEDORES VALUES (141, 'Haval', 'Avenida 141, Ciudad', '123456851', 'contact@haval.com');
-INSERT INTO PROVEEDORES VALUES (142, 'Changan Automobile', 'Boulevard 142, Ciudad', '123456852', 'contact@changan.com');
-INSERT INTO PROVEEDORES VALUES (143, 'Nio', 'Calle 143, Ciudad', '123456853', 'contact@nio.com');
-INSERT INTO PROVEEDORES VALUES (144, 'Xpeng Motors', 'Avenida 144, Ciudad', '123456854', 'contact@xpeng.com');
-INSERT INTO PROVEEDORES VALUES (145, 'Li Auto', 'Boulevard 145, Ciudad', '123456855', 'contact@liauto.com');
-INSERT INTO PROVEEDORES VALUES (146, 'GAC New Energy', 'Calle 146, Ciudad', '123456856', 'contact@gacnewenergy.com');
-INSERT INTO PROVEEDORES VALUES (147, 'SAIC-GM-Wuling', 'Avenida 147, Ciudad', '123456857', 'contact@saicgmwuling.com');
-INSERT INTO PROVEEDORES VALUES (148, 'Jiangling Motors', 'Boulevard 148, Ciudad', '123456858', 'contact@jiangling.com');
-INSERT INTO PROVEEDORES VALUES (149, 'Yutong Bus', 'Calle 149, Ciudad', '123456859', 'contact@yutongbus.com');
-INSERT INTO PROVEEDORES VALUES (150, 'King Long Motor', 'Avenida 150, Ciudad', '123456860', 'contact@kinglongmotor.com');
-INSERT INTO PROVEEDORES VALUES (151, 'Higer Bus', 'Boulevard 151, Ciudad', '123456861', 'contact@higerbus.com');
-INSERT INTO PROVEEDORES VALUES (152, 'Sunwin Bus', 'Calle 152, Ciudad', '123456862', 'contact@sunwinbus.com');
-INSERT INTO PROVEEDORES VALUES (153, 'Zhongtong Bus', 'Avenida 153, Ciudad', '123456863', 'contact@zhongtongbus.com');
-INSERT INTO PROVEEDORES VALUES (154, 'BYD Bus', 'Boulevard 154, Ciudad', '123456864', 'contact@bydbus.com');
-INSERT INTO PROVEEDORES VALUES (155, 'Foton AUV Bus', 'Calle 155, Ciudad', '123456865', 'contact@fotonauv.com');
-INSERT INTO PROVEEDORES VALUES (156, 'Ankai Bus', 'Avenida 156, Ciudad', '123456866', 'contact@ankaibus.com');
-INSERT INTO PROVEEDORES VALUES (157, 'Jiangsu Alfa', 'Boulevard 157, Ciudad', '123456867', 'contact@jiangsu-alfa.com');
-INSERT INTO PROVEEDORES VALUES (158, 'CSR Ziyang', 'Calle 158, Ciudad', '123456868', 'contact@csrziyang.com');
-INSERT INTO PROVEEDORES VALUES (159, 'CRRC', 'Avenida 159, Ciudad', '123456869', 'contact@crrc.com');
-INSERT INTO PROVEEDORES VALUES (160, 'Nanjing SR Puzhen', 'Boulevard 160, Ciudad', '123456870', 'contact@srpuzhen.com');
-INSERT INTO PROVEEDORES VALUES (161, 'CSR Qingdao Sifang', 'Calle 161, Ciudad', '123456871', 'contact@csrsifang.com');
-INSERT INTO PROVEEDORES VALUES (162, 'Zhuzhou CRRC Times Electric', 'Avenida 162, Ciudad', '123456872', 'contact@crrctimes.com');
-INSERT INTO PROVEEDORES VALUES (163, 'CSR Zhuzhou', 'Boulevard 163, Ciudad', '123456873', 'contact@csrzhuzhou.com');
-INSERT INTO PROVEEDORES VALUES (164, 'CRRC Shijiazhuang', 'Calle 164, Ciudad', '123456874', 'contact@crrcshijiazhuang.com');
-INSERT INTO PROVEEDORES VALUES (165, 'China Northern Locomotive', 'Avenida 165, Ciudad', '123456875', 'contact@cnlocomotive.com');
-INSERT INTO PROVEEDORES VALUES (166, 'China Southern Locomotive', 'Boulevard 166, Ciudad', '123456876', 'contact@cslocomotive.com');
-INSERT INTO PROVEEDORES VALUES (167, 'China National Heavy Duty Truck', 'Calle 167, Ciudad', '123456877', 'contact@cnhdt.com');
-INSERT INTO PROVEEDORES VALUES (168, 'Beiqi Foton Motor', 'Avenida 168, Ciudad', '123456878', 'contact@beiqifoton.com');
-INSERT INTO PROVEEDORES VALUES (169, 'Shaanxi Automobile Group', 'Boulevard 169, Ciudad', '123456879', 'contact@shaanxiauto.com');
-INSERT INTO PROVEEDORES VALUES (170, 'JAC Motors', 'Calle 170, Ciudad', '123456880', 'contact@jacmotors.com');
-INSERT INTO PROVEEDORES VALUES (171, 'Dongfeng Commercial Vehicle', 'Avenida 171, Ciudad', '123456881', 'contact@dfcv.com');
-INSERT INTO PROVEEDORES VALUES (172, 'FAW Jiefang', 'Boulevard 172, Ciudad', '123456882', 'contact@fawjiefang.com');
-INSERT INTO PROVEEDORES VALUES (173, 'Ankai Automobile', 'Calle 173, Ciudad', '123456883', 'contact@ankaiauto.com');
-INSERT INTO PROVEEDORES VALUES (174, 'Beiqi Yinxiang', 'Avenida 174, Ciudad', '123456884', 'contact@beiqiyinxiang.com');
-INSERT INTO PROVEEDORES VALUES (175, 'Huanghai Auto', 'Boulevard 175, Ciudad', '123456885', 'contact@huanghaiauto.com');
-INSERT INTO PROVEEDORES VALUES (176, 'Zhongxing Automobile', 'Calle 176, Ciudad', '123456886', 'contact@zhongxingauto.com');
-INSERT INTO PROVEEDORES VALUES (177, 'Yema Auto', 'Avenida 177, Ciudad', '123456887', 'contact@yemaauto.com');
-INSERT INTO PROVEEDORES VALUES (178, 'Dayun Group', 'Boulevard 178, Ciudad', '123456888', 'contact@dayungroup.com');
-INSERT INTO PROVEEDORES VALUES (179, 'Shacman', 'Calle 179, Ciudad', '123456889', 'contact@shacman.com');
-INSERT INTO PROVEEDORES VALUES (180, 'Dongfeng Sokon', 'Avenida 180, Ciudad', '123456890', 'contact@dfsk.com');
-INSERT INTO PROVEEDORES VALUES (181, 'BYD Commercial Vehicle', 'Boulevard 181, Ciudad', '123456891', 'contact@bydcommercial.com');
-INSERT INTO PROVEEDORES VALUES (182, 'FAW Commercial Vehicle', 'Calle 182, Ciudad', '123456892', 'contact@fawcommercial.com');
-INSERT INTO PROVEEDORES VALUES (183, 'Changan Commercial Vehicle', 'Avenida 183, Ciudad', '123456893', 'contact@changancommercial.com');
-INSERT INTO PROVEEDORES VALUES (184, 'JMC Commercial Vehicle', 'Boulevard 184, Ciudad', '123456894', 'contact@jmccommercial.com');
-INSERT INTO PROVEEDORES VALUES (185, 'SAIC Commercial Vehicle', 'Calle 185, Ciudad', '123456895', 'contact@saiccommercial.com');
-INSERT INTO PROVEEDORES VALUES (186, 'Dongfeng Heavy Truck', 'Avenida 186, Ciudad', '123456896', 'contact@dongfengheavy.com');
-INSERT INTO PROVEEDORES VALUES (187, 'JAC Heavy Duty', 'Boulevard 187, Ciudad', '123456897', 'contact@jacheavyduty.com');
-INSERT INTO PROVEEDORES VALUES (188, 'Shaanxi Heavy Duty', 'Calle 188, Ciudad', '123456898', 'contact@shaanxiheavy.com');
-INSERT INTO PROVEEDORES VALUES (189, 'FAW Heavy Truck', 'Avenida 189, Ciudad', '123456899', 'contact@fawheavy.com');
-INSERT INTO PROVEEDORES VALUES (190, 'Changan Heavy Truck', 'Boulevard 190, Ciudad', '123456900', 'contact@changanheavy.com');
-INSERT INTO PROVEEDORES VALUES (191, 'BYD Heavy Truck', 'Calle 191, Ciudad', '123456901', 'contact@bydheavy.com');
-INSERT INTO PROVEEDORES VALUES (192, 'Dongfeng Heavy Duty', 'Avenida 192, Ciudad', '123456902', 'contact@dongfengheavyduty.com');
-INSERT INTO PROVEEDORES VALUES (193, 'JMC Heavy Duty', 'Boulevard 193, Ciudad', '123456903', 'contact@jmcheavyduty.com');
-INSERT INTO PROVEEDORES VALUES (194, 'SAIC Heavy Truck', 'Calle 194, Ciudad', '123456904', 'contact@saicheavytruck.com');
-INSERT INTO PROVEEDORES VALUES (195, 'Shaanxi Commercial Vehicle', 'Avenida 195, Ciudad', '123456905', 'contact@shaanxicv.com');
-INSERT INTO PROVEEDORES VALUES (196, 'JAC Commercial Vehicle', 'Boulevard 196, Ciudad', '123456906', 'contact@jaccommercial.com');
-INSERT INTO PROVEEDORES VALUES (197, 'Dongfeng Commercial', 'Calle 197, Ciudad', '123456907', 'contact@dongfengcommercial.com');
-INSERT INTO PROVEEDORES VALUES (198, 'Changan Commercial', 'Avenida 198, Ciudad', '123456908', 'contact@changancommercial.com');
-INSERT INTO PROVEEDORES VALUES (199, 'FAW Commercial', 'Boulevard 199, Ciudad', '123456909', 'contact@fawcommercial.com');
-INSERT INTO PROVEEDORES VALUES (200, 'BYD Commercial', 'Calle 200, Ciudad', '123456910', 'contact@bydcommercial.com');
-
-
--- Insertar datos en la tabla: SERVICIOS
-INSERT INTO SERVICIOS VALUES (1, 'Cambio de aceite', 50);
-INSERT INTO SERVICIOS VALUES (2, 'Alineación y balanceo', 40);
-INSERT INTO SERVICIOS VALUES (3, 'Revisión de frenos', 30);
-INSERT INTO SERVICIOS VALUES (4, 'Cambio de bujías', 25);
-INSERT INTO SERVICIOS VALUES (5, 'Cambio de llantas', 200);
-INSERT INTO SERVICIOS VALUES (6, 'Diagnóstico general', 70);
-INSERT INTO SERVICIOS VALUES (7, 'Cambio de batería', 80);
-INSERT INTO SERVICIOS VALUES (8, 'Revisión de suspensión', 60);
-INSERT INTO SERVICIOS VALUES (9, 'Reparación de motor', 500);
-INSERT INTO SERVICIOS VALUES (10, 'Revisión de transmisión', 100);
-INSERT INTO SERVICIOS VALUES (11, 'Reparación de aire acondicionado', 150);
-INSERT INTO SERVICIOS VALUES (12, 'Limpieza de inyectores', 45);
-INSERT INTO SERVICIOS VALUES (13, 'Ajuste de válvulas', 60);
-INSERT INTO SERVICIOS VALUES (14, 'Revisión de sistema eléctrico', 70);
-INSERT INTO SERVICIOS VALUES (15, 'Reparación de alternador', 120);
-INSERT INTO SERVICIOS VALUES (16, 'Cambio de correas', 90);
-INSERT INTO SERVICIOS VALUES (17, 'Cambio de bomba de agua', 140);
-INSERT INTO SERVICIOS VALUES (18, 'Reparación de radiador', 130);
-INSERT INTO SERVICIOS VALUES (19, 'Cambio de termostato', 40);
-INSERT INTO SERVICIOS VALUES (20, 'Revisión de dirección hidráulica', 75);
-INSERT INTO SERVICIOS VALUES (21, 'Revisión de escape', 60);
-INSERT INTO SERVICIOS VALUES (22, 'Ajuste de frenos', 35);
-INSERT INTO SERVICIOS VALUES (23, 'Cambio de embrague', 220);
-INSERT INTO SERVICIOS VALUES (24, 'Reparación de parabrisas', 80);
-INSERT INTO SERVICIOS VALUES (25, 'Cambio de luces', 50);
-INSERT INTO SERVICIOS VALUES (26, 'Revisión de amortiguadores', 70);
-INSERT INTO SERVICIOS VALUES (27, 'Revisión de sensores', 55);
-INSERT INTO SERVICIOS VALUES (28, 'Cambio de bujías de precalentamiento', 30);
-INSERT INTO SERVICIOS VALUES (29, 'Limpieza de motor', 100);
-INSERT INTO SERVICIOS VALUES (30, 'Alineación de faros', 40);
-INSERT INTO SERVICIOS VALUES (31, 'Revisión de caja de cambios', 110);
-INSERT INTO SERVICIOS VALUES (32, 'Cambio de aceite de transmisión', 65);
-INSERT INTO SERVICIOS VALUES (33, 'Reparación de suspensión', 250);
-INSERT INTO SERVICIOS VALUES (34, 'Cambio de filtros de aire acondicionado', 40);
-INSERT INTO SERVICIOS VALUES (35, 'Limpieza de radiador', 70);
-INSERT INTO SERVICIOS VALUES (36, 'Revisión de bujes', 50);
-INSERT INTO SERVICIOS VALUES (37, 'Reparación de sistema de frenos', 200);
-INSERT INTO SERVICIOS VALUES (38, 'Cambio de bomba de freno', 90);
-INSERT INTO SERVICIOS VALUES (39, 'Reparación de caja de dirección', 150);
-INSERT INTO SERVICIOS VALUES (40, 'Revisión de sistema de refrigeración', 75);
-INSERT INTO SERVICIOS VALUES (41, 'Cambio de rótulas', 60);
-INSERT INTO SERVICIOS VALUES (42, 'Revisión de embrague', 85);
-INSERT INTO SERVICIOS VALUES (43, 'Reparación de diferencial', 180);
-INSERT INTO SERVICIOS VALUES (44, 'Cambio de pastillas de freno', 40);
-INSERT INTO SERVICIOS VALUES (45, 'Revisión de inyección electrónica', 70);
-INSERT INTO SERVICIOS VALUES (46, 'Reparación de motor eléctrico', 200);
-INSERT INTO SERVICIOS VALUES (47, 'Cambio de líquido de frenos', 30);
-INSERT INTO SERVICIOS VALUES (48, 'Revisión de circuito de luces', 35);
-INSERT INTO SERVICIOS VALUES (49, 'Cambio de bobina de encendido', 50);
-INSERT INTO SERVICIOS VALUES (50, 'Revisión de sistema de escape', 60);
-INSERT INTO SERVICIOS VALUES (51, 'Reparación de caja automática', 300);
-INSERT INTO SERVICIOS VALUES (52, 'Cambio de pastillas de embrague', 150);
-INSERT INTO SERVICIOS VALUES (53, 'Limpieza de sistema de escape', 80);
-INSERT INTO SERVICIOS VALUES (54, 'Revisión de transmisión manual', 110);
-INSERT INTO SERVICIOS VALUES (55, 'Cambio de llantas de invierno', 220);
-INSERT INTO SERVICIOS VALUES (56, 'Reparación de mangueras de refrigeración', 75);
-INSERT INTO SERVICIOS VALUES (57, 'Cambio de sensores de temperatura', 40);
-INSERT INTO SERVICIOS VALUES (58, 'Revisión de sistema de aire acondicionado', 120);
-INSERT INTO SERVICIOS VALUES (59, 'Limpieza de cuerpo de aceleración', 60);
-INSERT INTO SERVICIOS VALUES (60, 'Cambio de discos de freno', 130);
-INSERT INTO SERVICIOS VALUES (61, 'Reparación de transmisión CVT', 400);
-INSERT INTO SERVICIOS VALUES (62, 'Cambio de aceite de motor', 50);
-INSERT INTO SERVICIOS VALUES (63, 'Revisión de bomba de combustible', 100);
-INSERT INTO SERVICIOS VALUES (64, 'Cambio de cables de bujías', 30);
-INSERT INTO SERVICIOS VALUES (65, 'Revisión de sistema de calefacción', 80);
-INSERT INTO SERVICIOS VALUES (66, 'Reparación de inyección directa', 150);
-INSERT INTO SERVICIOS VALUES (67, 'Cambio de correa de distribución', 140);
-INSERT INTO SERVICIOS VALUES (68, 'Revisión de correa auxiliar', 50);
-INSERT INTO SERVICIOS VALUES (69, 'Limpieza de sistema de admisión', 90);
-INSERT INTO SERVICIOS VALUES (70, 'Revisión de sistema eléctrico', 100);
-INSERT INTO SERVICIOS VALUES (71, 'Reparación de alternador', 130);
-INSERT INTO SERVICIOS VALUES (72, 'Cambio de líquido refrigerante', 60);
-INSERT INTO SERVICIOS VALUES (73, 'Revisión de niveles de fluidos', 30);
-INSERT INTO SERVICIOS VALUES (74, 'Reparación de motor turbo', 500);
-INSERT INTO SERVICIOS VALUES (75, 'Cambio de sensores de oxígeno', 70);
-INSERT INTO SERVICIOS VALUES (76, 'Revisión de sistema de seguridad', 40);
-INSERT INTO SERVICIOS VALUES (77, 'Limpieza de carburador', 60);
-INSERT INTO SERVICIOS VALUES (78, 'Reparación de eje de transmisión', 200);
-INSERT INTO SERVICIOS VALUES (79, 'Cambio de amortiguadores', 150);
-INSERT INTO SERVICIOS VALUES (80, 'Revisión de sistema de frenado', 80);
-INSERT INTO SERVICIOS VALUES (81, 'Reparación de sistema de dirección', 120);
-INSERT INTO SERVICIOS VALUES (82, 'Cambio de parabrisas', 100);
-INSERT INTO SERVICIOS VALUES (83, 'Revisión de suspensión trasera', 90);
-INSERT INTO SERVICIOS VALUES (84, 'Limpieza de sistema de refrigeración', 80);
-INSERT INTO SERVICIOS VALUES (85, 'Reparación de sistema de combustible', 150);
-INSERT INTO SERVICIOS VALUES (86, 'Cambio de rótulas de dirección', 100);
-INSERT INTO SERVICIOS VALUES (87, 'Revisión de sistema de climatización', 70);
-INSERT INTO SERVICIOS VALUES (88, 'Limpieza de sistema de frenos ABS', 100);
-INSERT INTO SERVICIOS VALUES (89, 'Reparación de sistema de tracción', 200);
-INSERT INTO SERVICIOS VALUES (90, 'Cambio de discos de embrague', 180);
-INSERT INTO SERVICIOS VALUES (91, 'Revisión de presión de neumáticos', 30);
-INSERT INTO SERVICIOS VALUES (92, 'Limpieza de sistema de suspensión', 70);
-INSERT INTO SERVICIOS VALUES (93, 'Cambio de fluidos de transmisión', 60);
-INSERT INTO SERVICIOS VALUES (94, 'Reparación de bomba de dirección', 140);
-INSERT INTO SERVICIOS VALUES (95, 'Cambio de aceite diferencial', 50);
-INSERT INTO SERVICIOS VALUES (96, 'Revisión de niveles de aceite', 30);
-INSERT INTO SERVICIOS VALUES (97, 'Limpieza de sistema de dirección', 60);
-INSERT INTO SERVICIOS VALUES (98, 'Cambio de mangueras de refrigeración', 50);
-INSERT INTO SERVICIOS VALUES (99, 'Reparación de motor diésel', 400);
-INSERT INTO SERVICIOS VALUES (100, 'Cambio de bujías incandescentes', 40);
-INSERT INTO SERVICIOS VALUES (101, 'Revisión de sistema de combustible', 80);
-INSERT INTO SERVICIOS VALUES (102, 'Cambio de filtro de aire', 30);
-INSERT INTO SERVICIOS VALUES (103, 'Reparación de sistema de inyección', 150);
-INSERT INTO SERVICIOS VALUES (104, 'Cambio de correa trapezoidal', 60);
-INSERT INTO SERVICIOS VALUES (105, 'Revisión de sistema de escape', 90);
-INSERT INTO SERVICIOS VALUES (106, 'Reparación de sistema de dirección asistida', 200);
-INSERT INTO SERVICIOS VALUES (107, 'Cambio de aceite hidráulico', 60);
-INSERT INTO SERVICIOS VALUES (108, 'Revisión de niveles de refrigerante', 30);
-INSERT INTO SERVICIOS VALUES (109, 'Limpieza de sistema de lubricación', 80);
-INSERT INTO SERVICIOS VALUES (110, 'Reparación de sistema de tracción integral', 300);
-INSERT INTO SERVICIOS VALUES (111, 'Cambio de disco de freno trasero', 120);
-INSERT INTO SERVICIOS VALUES (112, 'Revisión de sistema de escape', 70);
-INSERT INTO SERVICIOS VALUES (113, 'Limpieza de radiador de aceite', 50);
-INSERT INTO SERVICIOS VALUES (114, 'Reparación de bomba de agua', 140);
-INSERT INTO SERVICIOS VALUES (115, 'Cambio de correa del alternador', 50);
-INSERT INTO SERVICIOS VALUES (116, 'Revisión de niveles de freno', 30);
-INSERT INTO SERVICIOS VALUES (117, 'Reparación de sistema de inyección electrónica', 160);
-INSERT INTO SERVICIOS VALUES (118, 'Cambio de bomba de freno', 100);
-INSERT INTO SERVICIOS VALUES (119, 'Revisión de presión de frenos', 50);
-INSERT INTO SERVICIOS VALUES (120, 'Reparación de sistema de lubricación', 130);
-INSERT INTO SERVICIOS VALUES (121, 'Cambio de amortiguadores traseros', 180);
-INSERT INTO SERVICIOS VALUES (122, 'Revisión de sistema de transmisión', 120);
-INSERT INTO SERVICIOS VALUES (123, 'Reparación de alternador', 150);
-INSERT INTO SERVICIOS VALUES (124, 'Cambio de polea de alternador', 40);
-INSERT INTO SERVICIOS VALUES (125, 'Revisión de compresor de aire acondicionado', 70);
-INSERT INTO SERVICIOS VALUES (126, 'Reparación de frenos de mano', 90);
-INSERT INTO SERVICIOS VALUES (127, 'Cambio de frenos traseros', 120);
-INSERT INTO SERVICIOS VALUES (128, 'Revisión de sistema eléctrico', 60);
-INSERT INTO SERVICIOS VALUES (129, 'Reparación de motor de arranque', 130);
-INSERT INTO SERVICIOS VALUES (130, 'Cambio de filtros de aceite', 40);
-INSERT INTO SERVICIOS VALUES (131, 'Revisión de batería', 30);
-INSERT INTO SERVICIOS VALUES (132, 'Limpieza de circuito de refrigeración', 90);
-INSERT INTO SERVICIOS VALUES (133, 'Cambio de pastillas de freno trasero', 80);
-INSERT INTO SERVICIOS VALUES (134, 'Revisión de compresor de aire', 100);
-INSERT INTO SERVICIOS VALUES (135, 'Reparación de sistema de ventilación', 160);
-INSERT INTO SERVICIOS VALUES (136, 'Cambio de amortiguadores delanteros', 200);
-INSERT INTO SERVICIOS VALUES (137, 'Revisión de sistema de aire', 90);
-INSERT INTO SERVICIOS VALUES (138, 'Limpieza de sistema de calefacción', 70);
-INSERT INTO SERVICIOS VALUES (139, 'Cambio de líquido de dirección', 60);
-INSERT INTO SERVICIOS VALUES (140, 'Revisión de niveles de dirección', 30);
-INSERT INTO SERVICIOS VALUES (141, 'Reparación de diferencial trasero', 180);
-INSERT INTO SERVICIOS VALUES (142, 'Cambio de palier', 90);
-INSERT INTO SERVICIOS VALUES (143, 'Revisión de sistema de ventilación', 80);
-INSERT INTO SERVICIOS VALUES (144, 'Limpieza de motor diésel', 150);
-INSERT INTO SERVICIOS VALUES (145, 'Cambio de bomba de vacío', 100);
-INSERT INTO SERVICIOS VALUES (146, 'Revisión de sistema de vacío', 50);
-INSERT INTO SERVICIOS VALUES (147, 'Reparación de turbo', 400);
-INSERT INTO SERVICIOS VALUES (148, 'Cambio de actuador de turbo', 150);
-INSERT INTO SERVICIOS VALUES (149, 'Revisión de niveles de turbo', 60);
-INSERT INTO SERVICIOS VALUES (150, 'Limpieza de intercooler', 70);
-INSERT INTO SERVICIOS VALUES (151, 'Cambio de compresor de turbo', 180);
-INSERT INTO SERVICIOS VALUES (152, 'Revisión de sensor de presión', 40);
-INSERT INTO SERVICIOS VALUES (153, 'Reparación de compresor de turbo', 200);
-INSERT INTO SERVICIOS VALUES (154, 'Cambio de filtro de combustible', 60);
-INSERT INTO SERVICIOS VALUES (155, 'Revisión de presión de combustible', 50);
-INSERT INTO SERVICIOS VALUES (156, 'Limpieza de sistema de inyección', 120);
-INSERT INTO SERVICIOS VALUES (157, 'Cambio de filtros de aire acondicionado', 40);
-INSERT INTO SERVICIOS VALUES (158, 'Revisión de sistema de lubricación', 70);
-INSERT INTO SERVICIOS VALUES (159, 'Reparación de sistema de escape', 150);
-INSERT INTO SERVICIOS VALUES (160, 'Cambio de mangueras de combustible', 50);
-INSERT INTO SERVICIOS VALUES (161, 'Revisión de niveles de combustible', 30);
-INSERT INTO SERVICIOS VALUES (162, 'Limpieza de inyectores de combustible', 60);
-INSERT INTO SERVICIOS VALUES (163, 'Reparación de compresor de aire', 100);
-INSERT INTO SERVICIOS VALUES (164, 'Cambio de filtros de aire', 50);
-INSERT INTO SERVICIOS VALUES (165, 'Revisión de presión de turbo', 80);
-INSERT INTO SERVICIOS VALUES (166, 'Limpieza de sistema de turbo', 90);
-INSERT INTO SERVICIOS VALUES (167, 'Reparación de sistema de alimentación', 120);
-INSERT INTO SERVICIOS VALUES (168, 'Cambio de bomba de aceite', 200);
-INSERT INTO SERVICIOS VALUES (169, 'Revisión de sistema de aceite', 70);
-INSERT INTO SERVICIOS VALUES (170, 'Limpieza de filtro de aire', 40);
-INSERT INTO SERVICIOS VALUES (171, 'Reparación de sistema de aceite', 150);
-INSERT INTO SERVICIOS VALUES (172, 'Cambio de correa de turbo', 80);
-INSERT INTO SERVICIOS VALUES (173, 'Revisión de mangueras de aceite', 60);
-INSERT INTO SERVICIOS VALUES (174, 'Limpieza de sistema de aceite', 90);
-INSERT INTO SERVICIOS VALUES (175, 'Reparación de mangueras de aire', 70);
-INSERT INTO SERVICIOS VALUES (176, 'Cambio de intercooler', 180);
-INSERT INTO SERVICIOS VALUES (177, 'Revisión de niveles de aire', 30);
-INSERT INTO SERVICIOS VALUES (178, 'Limpieza de radiador de aceite', 120);
-INSERT INTO SERVICIOS VALUES (179, 'Reparación de sistema de admisión', 100);
-INSERT INTO SERVICIOS VALUES (180, 'Cambio de radiador de aceite', 150);
-INSERT INTO SERVICIOS VALUES (181, 'Revisión de intercooler', 70);
-INSERT INTO SERVICIOS VALUES (182, 'Limpieza de sistema de aire', 60);
-INSERT INTO SERVICIOS VALUES (183, 'Reparación de sistema de frenado', 200);
-INSERT INTO SERVICIOS VALUES (184, 'Cambio de mangueras de frenado', 50);
-INSERT INTO SERVICIOS VALUES (185, 'Revisión de sistema de frenado', 80);
-INSERT INTO SERVICIOS VALUES (186, 'Limpieza de sistema de frenado', 70);
-INSERT INTO SERVICIOS VALUES (187, 'Reparación de bomba de aire', 150);
-INSERT INTO SERVICIOS VALUES (188, 'Cambio de filtros de frenado', 40);
-INSERT INTO SERVICIOS VALUES (189, 'Revisión de presión de frenado', 60);
-INSERT INTO SERVICIOS VALUES (190, 'Limpieza de compresor de aire', 90);
-INSERT INTO SERVICIOS VALUES (191, 'Reparación de sistema de frenado ABS', 250);
-INSERT INTO SERVICIOS VALUES (192, 'Cambio de sensores de frenado', 60);
-INSERT INTO SERVICIOS VALUES (193, 'Revisión de sistema de frenos', 70);
-INSERT INTO SERVICIOS VALUES (194, 'Limpieza de sistema de dirección', 80);
-INSERT INTO SERVICIOS VALUES (195, 'Reparación de sistema de frenos traseros', 100);
-INSERT INTO SERVICIOS VALUES (196, 'Cambio de filtros de frenos', 30);
-INSERT INTO SERVICIOS VALUES (197, 'Revisión de sistema de frenos delanteros', 60);
-INSERT INTO SERVICIOS VALUES (198, 'Limpieza de frenos delanteros', 70);
-INSERT INTO SERVICIOS VALUES (199, 'Reparación de frenos delanteros', 150);
-INSERT INTO SERVICIOS VALUES (200, 'Cambio de pastillas de freno delanteras', 80);
-
-
 -- Insertar datos en la tabla: MANTENIMIENTO
-INSERT INTO MANTENIMIENTO VALUES (1, 1, 1, TO_DATE('2024-01-10', 'YYYY-MM-DD'), 50, 'Cambio de aceite');
-INSERT INTO MANTENIMIENTO VALUES (2, 2, 2, TO_DATE('2024-02-15', 'YYYY-MM-DD'), 40, 'Alineación y balanceo');
-INSERT INTO MANTENIMIENTO VALUES (3, 3, 3, TO_DATE('2024-03-20', 'YYYY-MM-DD'), 30, 'Revisión de frenos');
-INSERT INTO MANTENIMIENTO VALUES (4, 4, 4, TO_DATE('2024-04-25', 'YYYY-MM-DD'), 25, 'Cambio de bujías');
-INSERT INTO MANTENIMIENTO VALUES (5, 5, 5, TO_DATE('2024-05-30', 'YYYY-MM-DD'), 200, 'Cambio de llantas');
-INSERT INTO MANTENIMIENTO VALUES (6, 6, 6, TO_DATE('2024-06-05', 'YYYY-MM-DD'), 70, 'Diagnóstico general');
-INSERT INTO MANTENIMIENTO VALUES (7, 7, 7, TO_DATE('2024-07-10', 'YYYY-MM-DD'), 80, 'Cambio de batería');
-INSERT INTO MANTENIMIENTO VALUES (8, 8, 8, TO_DATE('2024-08-15', 'YYYY-MM-DD'), 60, 'Revisión de suspensión');
-INSERT INTO MANTENIMIENTO VALUES (9, 9, 9, TO_DATE('2024-09-20', 'YYYY-MM-DD'), 500, 'Reparación de motor');
-INSERT INTO MANTENIMIENTO VALUES (10, 10, 10, TO_DATE('2024-10-25', 'YYYY-MM-DD'), 100, 'Revisión de transmisión');
+INSERT INTO MANTENIMIENTO VALUES (1, 1, 1, TO_DATE('2024-01-10', 'YYYY-MM-DD'), 'Cambio de aceite');
+INSERT INTO MANTENIMIENTO VALUES (2, 2, 2, TO_DATE('2024-02-15', 'YYYY-MM-DD'), 'Alineación y balanceo');
+INSERT INTO MANTENIMIENTO VALUES (3, 3, 3, TO_DATE('2024-03-20', 'YYYY-MM-DD'), 'Revisión de frenos');
+INSERT INTO MANTENIMIENTO VALUES (4, 4, 4, TO_DATE('2024-04-25', 'YYYY-MM-DD'), 'Cambio de bujías');
+INSERT INTO MANTENIMIENTO VALUES (5, 5, 5, TO_DATE('2024-05-30', 'YYYY-MM-DD'), 'Cambio de llantas');
+INSERT INTO MANTENIMIENTO VALUES (6, 6, 6, TO_DATE('2024-06-05', 'YYYY-MM-DD'), 'Diagnóstico general');
+INSERT INTO MANTENIMIENTO VALUES (7, 7, 7, TO_DATE('2024-07-10', 'YYYY-MM-DD'), 'Cambio de batería');
+INSERT INTO MANTENIMIENTO VALUES (8, 8, 8, TO_DATE('2024-08-15', 'YYYY-MM-DD'), 'Revisión de suspensión');
+INSERT INTO MANTENIMIENTO VALUES (9, 9, 9, TO_DATE('2024-09-20', 'YYYY-MM-DD'), 'Reparación de motor');
+INSERT INTO MANTENIMIENTO VALUES (10, 10, 10, TO_DATE('2024-10-25', 'YYYY-MM-DD'), 'Revisión de transmisión');
 INSERT INTO MANTENIMIENTO VALUES (11, 1, 1, TO_DATE('2024-11-10', 'YYYY-MM-DD'), 'Cambio de aceite realizado correctamente');
 INSERT INTO MANTENIMIENTO VALUES (12, 2, 2, TO_DATE('2024-12-15', 'YYYY-MM-DD'), 'Alineación y balanceo completado');
 INSERT INTO MANTENIMIENTO VALUES (13, 3, 3, TO_DATE('2025-01-20', 'YYYY-MM-DD'), 'Revisión de frenos sin problemas detectados');
@@ -1380,13 +1216,6 @@ INSERT INTO MANTENIMIENTO VALUES (200, 10, 190, TO_DATE('2040-08-05', 'YYYY-MM-D
 
 
 
-
-
-
-
-
-
-
 -- Insertar datos en la tabla: AUTOS
 INSERT INTO AUTOS VALUES (1, 1, 'Corolla', 'Toyota', 2020, 20000, 'Blanco', 1800, 'Gasolina', 15000, 5, 1, 'Automática', 'Nuevo');
 INSERT INTO AUTOS VALUES (2, 2, 'Mustang', 'Ford', 2019, 35000, 'Rojo', 5000, 'Gasolina', 10000, 3, 2, 'Manual', 'Usado');
@@ -1398,6 +1227,8 @@ INSERT INTO AUTOS VALUES (7, 7, 'A4', 'Audi', 2018, 38000, 'Negro', 1900, 'Gasol
 INSERT INTO AUTOS VALUES (8, 8, 'C-Class', 'Mercedes-Benz', 2020, 42000, 'Plateado', 2100, 'Gasolina', 8000, 9, 8, 'Automática', 'Nuevo');
 INSERT INTO AUTOS VALUES (9, 9, 'Elantra', 'Hyundai', 2016, 15000, 'Rojo', 1600, 'Gasolina', 35000, 10, 9, 'Automática', 'Usado');
 INSERT INTO AUTOS VALUES (10, 10, 'Golf', 'Volkswagen', 2017, 22000, 'Azul', 1400, 'Gasolina', 30000, 6, 10, 'Manual', 'Usado');
+
+
 INSERT INTO AUTOS VALUES (11, 1, 'Camry', 'Toyota', 2021, 25000, 'Gris', 2500, 'Gasolina', 5000, 7, 'Automática', 'Nuevo');
 INSERT INTO AUTOS VALUES (12, 2, 'Explorer', 'Ford', 2020, 37000, 'Negro', 3500, 'Gasolina', 15000, 4, 'Automática', 'Nuevo');
 INSERT INTO AUTOS VALUES (13, 3, 'Accord', 'Honda', 2019, 23000, 'Blanco', 2000, 'Gasolina', 12000, 6, 'Automática', 'Usado');
@@ -1587,15 +1418,7 @@ INSERT INTO AUTOS VALUES (196, 6, 'i3', 'BMW', 2020, 50000, 'Negro', 0, 'Eléctri
 INSERT INTO AUTOS VALUES (197, 7, 'Q5 Sportback', 'Audi', 2021, 65000, 'Gris', 2500, 'Gasolina', 5000, 5, 'Automática', 'Nuevo');
 INSERT INTO AUTOS VALUES (198, 8, 'EQC', 'Mercedes-Benz', 2022, 70000, 'Blanco', 0, 'Eléctrico', 2000, 6, 'Automática', 'Nuevo');
 INSERT INTO AUTOS VALUES (199, 9, 'Venue', 'Hyundai', 2021, 20000, 'Verde', 1600, 'Gasolina', 8000, 7, 'Automática', 'Nuevo');
-INSERT INTO AUTOS VALUES (200, 10, 'T-Roc', 'Volkswagen', 2019, 35000, 'Rojo', 2000, 'Gasolina', 15000, 2, 'Automática', 'Nuevo');
-
-
-
-
-
-
-
-
+INSERT INTO AUTOS VALUES (200, 10, 'T-Roc', 'Volkswagen', 2019, 35000, 'Rojo', 2000, 'Gasolina', 15000, 2,200, 'Automática', 'Nuevo');
 
 -- Insertar datos en la tabla: FACTURAS
 INSERT INTO FACTURAS VALUES (1, 18000, 19800, TO_DATE('2024-01-15', 'YYYY-MM-DD'), TO_TIMESTAMP('2024-01-15 10:30:00', 'YYYY-MM-DD HH24:MI:SS'), 1);
@@ -1866,7 +1689,6 @@ INSERT INTO VENTAS VALUES (62, 62, TO_DATE('2029-02-25', 'YYYY-MM-DD'), 62, 62, 
 INSERT INTO VENTAS VALUES (63, 63, TO_DATE('2029-03-31', 'YYYY-MM-DD'), 63, 63, 63);
 INSERT INTO VENTAS VALUES (64, 64, TO_DATE('2029-04-05', 'YYYY-MM-DD'), 64, 64, 64);
 INSERT INTO VENTAS VALUES (65, 65, TO_DATE('2029-05-10', 'YYYY-MM-DD'), 65, 65, 65);
-INSERT INTO VENTAS VALUES (65, 65, TO_DATE('2029-05-10', 'YYYY-MM-DD'), 65, 65, 65);
 INSERT INTO VENTAS VALUES (66, 66, TO_DATE('2029-06-15', 'YYYY-MM-DD'), 66, 66, 66);
 INSERT INTO VENTAS VALUES (67, 67, TO_DATE('2029-07-20', 'YYYY-MM-DD'), 67, 67, 67);
 INSERT INTO VENTAS VALUES (68, 68, TO_DATE('2029-08-25', 'YYYY-MM-DD'), 68, 68, 68);
@@ -2002,8 +1824,6 @@ INSERT INTO VENTAS VALUES (197, 197, TO_DATE('2040-05-10', 'YYYY-MM-DD'), 197, 1
 INSERT INTO VENTAS VALUES (198, 198, TO_DATE('2040-06-15', 'YYYY-MM-DD'), 198, 198, 198);
 INSERT INTO VENTAS VALUES (199, 199, TO_DATE('2040-07-20', 'YYYY-MM-DD'), 199, 199, 199);
 INSERT INTO VENTAS VALUES (200, 200, TO_DATE('2040-08-25', 'YYYY-MM-DD'), 200, 200, 200);
-
-
 
 -- Insertar datos en la tabla: REPUESTO
 INSERT INTO REPUESTO VALUES (1, 1, 'Filtro de aceite', 10);
@@ -2411,9 +2231,6 @@ INSERT INTO COTIZACIONES VALUES (198, 198, 198, 34000, TO_DATE('2040-06-30', 'YY
 INSERT INTO COTIZACIONES VALUES (199, 199, 199, 24000, TO_DATE('2040-07-05', 'YYYY-MM-DD'), 'Pendiente');
 INSERT INTO COTIZACIONES VALUES (200, 200, 200, 35000, TO_DATE('2040-08-10', 'YYYY-MM-DD'), 'Aceptada');
 
-
-
-
 -- Insertar datos en la tabla: FINANCIAMIENTO
 INSERT INTO FINANCIAMIENTO VALUES (1, 1, 1, 15000, 3.5, 60, TO_DATE('2024-01-01', 'YYYY-MM-DD'), TO_DATE('2028-01-01', 'YYYY-MM-DD'), 'Banco Nacional');
 INSERT INTO FINANCIAMIENTO VALUES (2, 2, 2, 30000, 4.0, 72, TO_DATE('2024-02-01', 'YYYY-MM-DD'), TO_DATE('2030-02-01', 'YYYY-MM-DD'), 'Banco de Costa Rica');
@@ -2425,5 +2242,208 @@ INSERT INTO FINANCIAMIENTO VALUES (7, 7, 7, 36000, 3.5, 84, TO_DATE('2024-07-01'
 INSERT INTO FINANCIAMIENTO VALUES (8, 8, 8, 40000, 4.1, 96, TO_DATE('2024-08-01', 'YYYY-MM-DD'), TO_DATE('2032-08-01', 'YYYY-MM-DD'), 'Banco Lafise');
 INSERT INTO FINANCIAMIENTO VALUES (9, 9, 9, 13000, 3.6, 48, TO_DATE('2024-09-01', 'YYYY-MM-DD'), TO_DATE('2028-09-01', 'YYYY-MM-DD'), 'HSBC');
 INSERT INTO FINANCIAMIENTO VALUES (10, 10, 10, 20000, 3.8, 60, TO_DATE('2024-10-01', 'YYYY-MM-DD'), TO_DATE('2029-10-01', 'YYYY-MM-DD'), 'Citibank');
+
+
+-- Insertar datos en la tabla: PUESTOS
+INSERT INTO PUESTOS VALUES (1, 'Gerente', 2000);
+INSERT INTO PUESTOS VALUES (2, 'Vendedor', 1500);
+INSERT INTO PUESTOS VALUES (3, 'Mecanico', 1200);
+INSERT INTO PUESTOS VALUES (4, 'Administrador', 1800);
+INSERT INTO PUESTOS VALUES (5, 'Contador', 1600);
+INSERT INTO PUESTOS VALUES (6, 'Recepcionista', 1100);
+INSERT INTO PUESTOS VALUES (7, 'Limpieza', 800);
+INSERT INTO PUESTOS VALUES (8, 'Seguridad', 1000);
+INSERT INTO PUESTOS VALUES (9, 'Jefe de Taller', 1900);
+INSERT INTO PUESTOS VALUES (10, 'Asistente', 1300);
+INSERT INTO PUESTOS VALUES (11, 'Gerente de Ventas', 2100);
+INSERT INTO PUESTOS VALUES (12, 'Asesor Financiero', 1700);
+INSERT INTO PUESTOS VALUES (13, 'Encargado de Inventario', 1400);
+INSERT INTO PUESTOS VALUES (14, 'Supervisor de Mantenimiento', 1800);
+INSERT INTO PUESTOS VALUES (15, 'Analista de Marketing', 1600);
+INSERT INTO PUESTOS VALUES (16, 'Especialista en IT', 1900);
+INSERT INTO PUESTOS VALUES (17, 'Auxiliar Contable', 1200);
+INSERT INTO PUESTOS VALUES (18, 'Coordinador de Recursos Humanos', 2000);
+INSERT INTO PUESTOS VALUES (19, 'Gerente de Servicio al Cliente', 2100);
+INSERT INTO PUESTOS VALUES (20, 'Jefe de Logística', 1800);
+INSERT INTO PUESTOS VALUES (21, 'Operador de Grúa', 1300);
+INSERT INTO PUESTOS VALUES (22, 'Técnico de Diagnóstico', 1400);
+INSERT INTO PUESTOS VALUES (23, 'Supervisor de Ventas', 1850);
+INSERT INTO PUESTOS VALUES (24, 'Especialista en Atención al Cliente', 1500);
+INSERT INTO PUESTOS VALUES (25, 'Coordinador de Operaciones', 2100);
+INSERT INTO PUESTOS VALUES (26, 'Encargado de Compras', 1600);
+INSERT INTO PUESTOS VALUES (27, 'Ingeniero de Calidad', 2000);
+INSERT INTO PUESTOS VALUES (28, 'Planificador de Producción', 1800);
+INSERT INTO PUESTOS VALUES (29, 'Supervisor de Seguridad', 1300);
+INSERT INTO PUESTOS VALUES (30, 'Jefe de Control de Calidad', 2200);
+INSERT INTO PUESTOS VALUES (31, 'Coordinador de Proyectos', 1900);
+INSERT INTO PUESTOS VALUES (32, 'Consultor de Procesos', 2300);
+INSERT INTO PUESTOS VALUES (33, 'Gerente de Sucursal', 2400);
+INSERT INTO PUESTOS VALUES (34, 'Especialista en Logística', 1700);
+INSERT INTO PUESTOS VALUES (35, 'Coordinador de Entrenamiento', 1600);
+INSERT INTO PUESTOS VALUES (36, 'Jefe de Almacén', 1500);
+INSERT INTO PUESTOS VALUES (37, 'Encargado de Garantías', 1400);
+INSERT INTO PUESTOS VALUES (38, 'Supervisor de Taller', 1800);
+INSERT INTO PUESTOS VALUES (39, 'Especialista en Reclutamiento', 1750);
+INSERT INTO PUESTOS VALUES (40, 'Analista de Datos', 1900);
+INSERT INTO PUESTOS VALUES (41, 'Gerente de Publicidad', 2200);
+INSERT INTO PUESTOS VALUES (42, 'Encargado de Logística', 1600);
+INSERT INTO PUESTOS VALUES (43, 'Supervisor de Call Center', 1500);
+INSERT INTO PUESTOS VALUES (44, 'Especialista en Auditoría', 1900);
+INSERT INTO PUESTOS VALUES (45, 'Jefe de Comunicación', 2100);
+INSERT INTO PUESTOS VALUES (46, 'Coordinador de Ventas', 1800);
+INSERT INTO PUESTOS VALUES (47, 'Gerente de Proyectos', 2500);
+INSERT INTO PUESTOS VALUES (48, 'Asistente de Gerencia', 1500);
+INSERT INTO PUESTOS VALUES (49, 'Coordinador de Mantenimiento', 1700);
+INSERT INTO PUESTOS VALUES (50, 'Técnico en Electrónica', 1300);
+INSERT INTO PUESTOS VALUES (51, 'Especialista en Publicidad', 1800);
+INSERT INTO PUESTOS VALUES (52, 'Gerente de Operaciones', 2300);
+INSERT INTO PUESTOS VALUES (53, 'Jefe de Compras', 2200);
+INSERT INTO PUESTOS VALUES (54, 'Supervisor de Recursos Humanos', 1900);
+INSERT INTO PUESTOS VALUES (55, 'Encargado de Seguridad', 1600);
+INSERT INTO PUESTOS VALUES (56, 'Técnico en Mecatrónica', 1400);
+INSERT INTO PUESTOS VALUES (57, 'Coordinador de Auditoría', 2000);
+INSERT INTO PUESTOS VALUES (58, 'Jefe de IT', 2400);
+INSERT INTO PUESTOS VALUES (59, 'Consultor de Negocios', 2300);
+INSERT INTO PUESTOS VALUES (60, 'Especialista en Desarrollo Organizacional', 1800);
+INSERT INTO PUESTOS VALUES (61, 'Analista Financiero', 2000);
+INSERT INTO PUESTOS VALUES (62, 'Gerente de Innovación', 2500);
+INSERT INTO PUESTOS VALUES (63, 'Supervisor de Planta', 1900);
+INSERT INTO PUESTOS VALUES (64, 'Encargado de Relaciones Públicas', 1700);
+INSERT INTO PUESTOS VALUES (65, 'Jefe de Ventas', 2300);
+INSERT INTO PUESTOS VALUES (66, 'Coordinador de Calidad', 1800);
+INSERT INTO PUESTOS VALUES (67, 'Consultor de Marketing', 2200);
+INSERT INTO PUESTOS VALUES (68, 'Técnico en Refrigeración', 1400);
+INSERT INTO PUESTOS VALUES (69, 'Supervisor de Mantenimiento', 1900);
+INSERT INTO PUESTOS VALUES (70, 'Especialista en Tecnología', 2100);
+INSERT INTO PUESTOS VALUES (71, 'Gerente de Administración', 2400);
+INSERT INTO PUESTOS VALUES (72, 'Coordinador de Finanzas', 2000);
+INSERT INTO PUESTOS VALUES (73, 'Jefe de Entrenamiento', 2100);
+INSERT INTO PUESTOS VALUES (74, 'Especialista en Desarrollo de Software', 2300);
+INSERT INTO PUESTOS VALUES (75, 'Encargado de Control Interno', 1600);
+INSERT INTO PUESTOS VALUES (76, 'Supervisor de Distribución', 1700);
+INSERT INTO PUESTOS VALUES (77, 'Analista de Riesgos', 1900);
+INSERT INTO PUESTOS VALUES (78, 'Jefe de Recursos Humanos', 2200);
+INSERT INTO PUESTOS VALUES (79, 'Coordinador de Proveeduría', 1600);
+INSERT INTO PUESTOS VALUES (80, 'Especialista en Gestión de Talento', 1800);
+INSERT INTO PUESTOS VALUES (81, 'Gerente de Procesos', 2500);
+INSERT INTO PUESTOS VALUES (82, 'Técnico en Mantenimiento Industrial', 1400);
+INSERT INTO PUESTOS VALUES (83, 'Supervisor de Logística', 1800);
+INSERT INTO PUESTOS VALUES (84, 'Encargado de Transporte', 1600);
+INSERT INTO PUESTOS VALUES (85, 'Jefe de Proyectos', 2400);
+INSERT INTO PUESTOS VALUES (86, 'Coordinador de Recursos Financieros', 2100);
+INSERT INTO PUESTOS VALUES (87, 'Especialista en Compras', 1800);
+INSERT INTO PUESTOS VALUES (88, 'Analista de Costos', 1900);
+INSERT INTO PUESTOS VALUES (89, 'Gerente de TI', 2500);
+INSERT INTO PUESTOS VALUES (90, 'Técnico en Telecomunicaciones', 1500);
+INSERT INTO PUESTOS VALUES (91, 'Coordinador de Inventarios', 1700);
+INSERT INTO PUESTOS VALUES (92, 'Jefe de Producción', 2200);
+INSERT INTO PUESTOS VALUES (93, 'Supervisor de Calidad', 1800);
+INSERT INTO PUESTOS VALUES (94, 'Consultor en Seguridad', 2300);
+INSERT INTO PUESTOS VALUES (95, 'Especialista en Planificación', 1900);
+INSERT INTO PUESTOS VALUES (96, 'Gerente de Seguridad Industrial', 2500);
+INSERT INTO PUESTOS VALUES (97, 'Coordinador de Logística', 1800);
+INSERT INTO PUESTOS VALUES (98, 'Técnico en Automatización', 1500);
+INSERT INTO PUESTOS VALUES (99, 'Jefe de Auditoría', 2200);
+INSERT INTO PUESTOS VALUES (100, 'Especialista en Operaciones', 1900);
+INSERT INTO PUESTOS VALUES (101, 'Gerente de Estrategia', 2600);
+INSERT INTO PUESTOS VALUES (102, 'Supervisor de Seguridad Informática', 2000);
+INSERT INTO PUESTOS VALUES (103, 'Técnico en Instalaciones Eléctricas', 1400);
+INSERT INTO PUESTOS VALUES (104, 'Coordinador de Seguridad', 1800);
+INSERT INTO PUESTOS VALUES (105, 'Jefe de Proveeduría', 2100);
+INSERT INTO PUESTOS VALUES (106, 'Especialista en Innovación', 2200);
+INSERT INTO PUESTOS VALUES (107, 'Gerente de Innovación y Desarrollo', 2600);
+INSERT INTO PUESTOS VALUES (108, 'Supervisor de Inventarios', 1900);
+INSERT INTO PUESTOS VALUES (109, 'Técnico en Instrumentación', 1500);
+INSERT INTO PUESTOS VALUES (110, 'Coordinador de Seguridad Industrial', 2000);
+INSERT INTO PUESTOS VALUES (111, 'Jefe de Control de Inventarios', 2200);
+INSERT INTO PUESTOS VALUES (112, 'Especialista en Procesos', 1900);
+INSERT INTO PUESTOS VALUES (113, 'Gerente de Calidad', 2500);
+INSERT INTO PUESTOS VALUES (114, 'Supervisor de Proyectos', 2100);
+INSERT INTO PUESTOS VALUES (115, 'Técnico en Redes y Telecomunicaciones', 1500);
+INSERT INTO PUESTOS VALUES (116, 'Coordinador de Logística y Distribución', 1900);
+INSERT INTO PUESTOS VALUES (117, 'Jefe de Seguridad Informática', 2400);
+INSERT INTO PUESTOS VALUES (118, 'Especialista en Control de Calidad', 1800);
+INSERT INTO PUESTOS VALUES (119, 'Gerente de Producción', 2600);
+INSERT INTO PUESTOS VALUES (120, 'Supervisor de Procesos', 1900);
+INSERT INTO PUESTOS VALUES (121, 'Técnico en Maquinarias', 1500);
+INSERT INTO PUESTOS VALUES (122, 'Coordinador de Entrenamiento y Desarrollo', 2100);
+INSERT INTO PUESTOS VALUES (123, 'Jefe de Riesgos', 2300);
+INSERT INTO PUESTOS VALUES (124, 'Especialista en Gestión Financiera', 2000);
+INSERT INTO PUESTOS VALUES (125, 'Gerente de Proyectos Especiales', 2700);
+INSERT INTO PUESTOS VALUES (126, 'Supervisor de Mantenimiento y Servicios', 2000);
+INSERT INTO PUESTOS VALUES (127, 'Técnico en Equipos Pesados', 1600);
+INSERT INTO PUESTOS VALUES (128, 'Coordinador de Compras', 1900);
+INSERT INTO PUESTOS VALUES (129, 'Jefe de Seguridad y Salud Ocupacional', 2200);
+INSERT INTO PUESTOS VALUES (130, 'Especialista en Servicios Generales', 1800);
+INSERT INTO PUESTOS VALUES (131, 'Gerente de Servicios Técnicos', 2600);
+INSERT INTO PUESTOS VALUES (132, 'Supervisor de Producción', 2000);
+INSERT INTO PUESTOS VALUES (133, 'Técnico en Aire Acondicionado', 1500);
+INSERT INTO PUESTOS VALUES (134, 'Coordinador de Recursos Materiales', 1900);
+INSERT INTO PUESTOS VALUES (135, 'Jefe de Comunicación Corporativa', 2200);
+INSERT INTO PUESTOS VALUES (136, 'Especialista en Proyectos', 1900);
+INSERT INTO PUESTOS VALUES (137, 'Gerente de Operaciones y Logística', 2700);
+INSERT INTO PUESTOS VALUES (138, 'Supervisor de Soporte Técnico', 2000);
+INSERT INTO PUESTOS VALUES (139, 'Técnico en Mantenimiento de Flotas', 1600);
+INSERT INTO PUESTOS VALUES (140, 'Coordinador de Desarrollo Humano', 2100);
+INSERT INTO PUESTOS VALUES (141, 'Jefe de Logística y Transporte', 2300);
+INSERT INTO PUESTOS VALUES (142, 'Especialista en Relaciones Laborales', 1800);
+INSERT INTO PUESTOS VALUES (143, 'Gerente de Recursos Humanos', 2700);
+INSERT INTO PUESTOS VALUES (144, 'Supervisor de Mantenimiento Preventivo', 2000);
+INSERT INTO PUESTOS VALUES (145, 'Técnico en Sistemas de Control', 1500);
+INSERT INTO PUESTOS VALUES (146, 'Coordinador de Servicios Técnicos', 2100);
+INSERT INTO PUESTOS VALUES (147, 'Jefe de Planificación', 2300);
+INSERT INTO PUESTOS VALUES (148, 'Especialista en Evaluación de Proyectos', 2000);
+INSERT INTO PUESTOS VALUES (149, 'Gerente de Desarrollo Organizacional', 2700);
+INSERT INTO PUESTOS VALUES (150, 'Supervisor de Seguridad y Salud', 1900);
+INSERT INTO PUESTOS VALUES (151, 'Técnico en Instalaciones Industriales', 1400);
+INSERT INTO PUESTOS VALUES (152, 'Coordinador de Proyectos y Servicios', 2100);
+INSERT INTO PUESTOS VALUES (153, 'Jefe de Ingeniería', 2400);
+INSERT INTO PUESTOS VALUES (154, 'Especialista en Capacitación', 1900);
+INSERT INTO PUESTOS VALUES (155, 'Gerente de Infraestructura', 2600);
+INSERT INTO PUESTOS VALUES (156, 'Supervisor de Infraestructura', 2000);
+INSERT INTO PUESTOS VALUES (157, 'Técnico en Energía y Potencia', 1600);
+INSERT INTO PUESTOS VALUES (158, 'Coordinador de Medio Ambiente', 1900);
+INSERT INTO PUESTOS VALUES (159, 'Jefe de Tecnología', 2500);
+INSERT INTO PUESTOS VALUES (160, 'Especialista en Sistemas de Información', 2200);
+INSERT INTO PUESTOS VALUES (161, 'Gerente de Tecnología', 2800);
+INSERT INTO PUESTOS VALUES (162, 'Supervisor de Tecnología', 2200);
+INSERT INTO PUESTOS VALUES (163, 'Técnico en Gestión de Calidad', 1800);
+INSERT INTO PUESTOS VALUES (164, 'Coordinador de Desarrollo de Software', 2200);
+INSERT INTO PUESTOS VALUES (165, 'Jefe de Innovación Tecnológica', 2600);
+INSERT INTO PUESTOS VALUES (166, 'Especialista en Seguridad y Salud Ocupacional', 2000);
+INSERT INTO PUESTOS VALUES (167, 'Gerente de Mantenimiento', 2700);
+INSERT INTO PUESTOS VALUES (168, 'Supervisor de Proyectos Tecnológicos', 2200);
+INSERT INTO PUESTOS VALUES (169, 'Técnico en Seguridad Electrónica', 1600);
+INSERT INTO PUESTOS VALUES (170, 'Coordinador de Evaluación de Proyectos', 2200);
+INSERT INTO PUESTOS VALUES (171, 'Jefe de Medio Ambiente', 2500);
+INSERT INTO PUESTOS VALUES (172, 'Especialista en Gestión Ambiental', 1900);
+INSERT INTO PUESTOS VALUES (173, 'Gerente de Seguridad Corporativa', 2800);
+INSERT INTO PUESTOS VALUES (174, 'Supervisor de Control de Calidad', 2100);
+INSERT INTO PUESTOS VALUES (175, 'Técnico en Monitoreo y Control', 1700);
+INSERT INTO PUESTOS VALUES (176, 'Coordinador de Seguridad Operacional', 2300);
+INSERT INTO PUESTOS VALUES (177, 'Jefe de Operaciones Logísticas', 2600);
+INSERT INTO PUESTOS VALUES (178, 'Especialista en Recursos Naturales', 2000);
+INSERT INTO PUESTOS VALUES (179, 'Gerente de Producción Industrial', 2800);
+INSERT INTO PUESTOS VALUES (180, 'Supervisor de Mantenimiento Predictivo', 2100);
+INSERT INTO PUESTOS VALUES (181, 'Técnico en Control de Producción', 1800);
+INSERT INTO PUESTOS VALUES (182, 'Coordinador de Programas de Seguridad', 2300);
+INSERT INTO PUESTOS VALUES (183, 'Jefe de Seguridad Operacional', 2600);
+INSERT INTO PUESTOS VALUES (184, 'Especialista en Procesos Industriales', 2200);
+INSERT INTO PUESTOS VALUES (185, 'Gerente de Ingeniería de Proyectos', 2900);
+INSERT INTO PUESTOS VALUES (186, 'Supervisor de Producción y Operaciones', 2200);
+INSERT INTO PUESTOS VALUES (187, 'Técnico en Sistemas de Automatización', 1700);
+INSERT INTO PUESTOS VALUES (188, 'Coordinador de Mejora Continua', 2300);
+INSERT INTO PUESTOS VALUES (189, 'Jefe de Logística Internacional', 2700);
+INSERT INTO PUESTOS VALUES (190, 'Especialista en Normativas', 2000);
+INSERT INTO PUESTOS VALUES (191, 'Gerente de Proyectos Industriales', 2900);
+INSERT INTO PUESTOS VALUES (192, 'Supervisor de Procesos Productivos', 2200);
+INSERT INTO PUESTOS VALUES (193, 'Técnico en Mantenimiento Correctivo', 1800);
+INSERT INTO PUESTOS VALUES (194, 'Coordinador de Seguridad Electrónica', 2200);
+INSERT INTO PUESTOS VALUES (195, 'Jefe de Gestión de Riesgos', 2600);
+INSERT INTO PUESTOS VALUES (196, 'Especialista en Gestión de Riesgos', 2200);
+INSERT INTO PUESTOS VALUES (197, 'Gerente de Seguridad y Salud Ocupacional', 2900);
+INSERT INTO PUESTOS VALUES (198, 'Supervisor de Seguridad Operativa', 2300);
+INSERT INTO PUESTOS VALUES (199, 'Técnico en Equipos Electrónicos', 1700);
+INSERT INTO PUESTOS VALUES (200, 'Coordinador de Seguridad y Salud', 2200);
 
 
